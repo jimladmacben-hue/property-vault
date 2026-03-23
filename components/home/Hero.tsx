@@ -20,10 +20,10 @@ export default function Hero() {
       <div className="absolute inset-0 z-0">
         {/* Replace src with your actual hero image */}
         <img
-          src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=1600&q=80"
-          alt="Modern house"
-          className="w-full h-full object-cover object-center"
-        />
+  src="/images/hero-bg.jpg"
+  alt="Modern house"
+  className="w-full h-full object-cover object-center"
+/>
         {/* Subtle dark overlay at top for navbar readability */}
         <div className="absolute inset-0 bg-black/20" />
         {/* Bottom fade for stats bar */}

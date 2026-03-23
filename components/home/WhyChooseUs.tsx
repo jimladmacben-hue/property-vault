@@ -1,62 +1,38 @@
 const features = [
   {
     icon: (
-      <svg width="26" height="26" viewBox="0 0 24 24" fill="none">
-        <path
-          d="M12 2L4 5v6c0 5.25 3.5 10.15 8 11.35C16.5 21.15 20 16.25 20 11V5l-8-3z"
-          fill="white"
-          opacity="0.9"
-        />
-        <path
-          d="M9 12l2 2 4-4"
-          stroke="#F5A623"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        />
-      </svg>
+      <img
+        src="/icons/verified.png"
+        alt="Property Verified"
+        className="w-8 h-8 object-contain"
+      />
     ),
     title: "Property Verified",
-    description:
-      "Every property undergoes a rigorous 3-point title verification process.",
+    description: "Every property undergoes a rigorous 3-point title verification process.",
   },
   {
     icon: (
-      <svg width="26" height="26" viewBox="0 0 24 24" fill="none">
-        <path
-          d="M12 2C8.5 2 6 4.5 6 7.5c0 1.5.5 2.8 1.5 3.8L6 19h12l-1.5-7.7C17.5 10.3 18 9 18 7.5 18 4.5 15.5 2 12 2z"
-          fill="white"
-          opacity="0.85"
-        />
-        <ellipse cx="9" cy="8" rx="1.5" ry="2" fill="#F5A623" opacity="0.7" />
-        <ellipse cx="15" cy="8" rx="1.5" ry="2" fill="#F5A623" opacity="0.7" />
-        <rect x="8" y="18" width="8" height="2" rx="1" fill="white" opacity="0.6" />
-      </svg>
+      <img
+        src="/icons/agents.png"
+        alt="Verified Agents"
+        className="w-8 h-8 object-contain"
+      />
     ),
     title: "Verified Agents",
-    description:
-      "Connect exclusively with licensed, background-checked real estate professionals.",
+    description: "Connect exclusively with licensed, background-checked real estate professionals.",
   },
   {
     icon: (
-      <svg width="26" height="26" viewBox="0 0 24 24" fill="none">
-        <rect x="3" y="6" width="18" height="13" rx="2" fill="white" opacity="0.85" />
-        <path d="M3 10h18" stroke="#F5A623" strokeWidth="1.5" />
-        <circle cx="12" cy="15" r="2.5" stroke="#F5A623" strokeWidth="1.5" fill="none" />
-        <path
-          d="M12 13.5v1M12 16.5v1M13.5 15h-1M10.5 15h-1"
-          stroke="#F5A623"
-          strokeWidth="1"
-          strokeLinecap="round"
-        />
-      </svg>
+      <img
+        src="/icons/escrow.png"
+        alt="Escrow Protected"
+        className="w-8 h-8 object-contain"
+      />
     ),
     title: "Escrow Protected",
-    description:
-      "Secure your transactions with our integrated, legal-grade escrow services.",
+    description: "Secure your transactions with our integrated, legal-grade escrow services.",
   },
 ];
-
 export default function WhyChooseUs() {
   return (
     <section className="w-full bg-white py-20 px-4">
