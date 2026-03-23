@@ -43,17 +43,12 @@ export default function Footer() {
           {/* Col 1 — Brand */}
           <div className="md:col-span-1">
             {/* Logo */}
-            <div className="flex items-center gap-2 mb-4">
-              <div className="w-9 h-9 bg-white/10 rounded-lg flex items-center justify-center border border-white/20">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-                  <path d="M12 2L3 7.5V16.5L12 22L21 16.5V7.5L12 2Z" stroke="white" strokeWidth="1.5" fill="none" />
-                  <path d="M12 7L8 9.5V14.5L12 17L16 14.5V9.5L12 7Z" fill="white" opacity="0.7" />
-                </svg>
-              </div>
-              <div className="flex flex-col leading-none">
-                <span className="text-[10px] font-bold text-white tracking-widest uppercase">Property</span>
-                <span className="text-[10px] font-bold text-white tracking-widest uppercase">Vault</span>
-              </div>
+            <div className="flex items-center gap-2 mb-4 w-30 h-10">
+            <img
+                src="/images/logo-white.png"   
+                alt="Property Vault Logo"
+                className="w-full h-full object-contain"
+              />
             </div>
 
             {/* Tagline */}

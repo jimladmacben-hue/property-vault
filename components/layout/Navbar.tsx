@@ -10,29 +10,11 @@ export default function Navbar() {
       <div className="max-w-7xl mx-auto flex items-center justify-between border border-white rounded-[50px] px-6 py-2 bg-white/10">
         {/* Logo */}
         <div className="flex items-center gap-2">
-          <div className="w-9 h-9 bg-[#1a1f3c] rounded-lg flex items-center justify-center">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-              <path
-                d="M12 2L3 7.5V16.5L12 22L21 16.5V7.5L12 2Z"
-                stroke="white"
-                strokeWidth="1.5"
-                fill="none"
-              />
-              <path
-                d="M12 6L7 9V15L12 18L17 15V9L12 6Z"
-                fill="white"
-                opacity="0.6"
-              />
-            </svg>
-          </div>
-          <div className="flex flex-col leading-none">
-            <span className="text-[11px] font-bold text-[#1a1f3c] tracking-widest uppercase">
-              Property
-            </span>
-            <span className="text-[11px] font-bold text-[#1a1f3c] tracking-widest uppercase">
-              Vault
-            </span>
-          </div>
+        <img
+    src="/images/logo.png"
+    alt="Property Vault Logo"
+    className="w-full h-full object-contain"
+  />
         </div>
 
         {/* Desktop Nav Links */}

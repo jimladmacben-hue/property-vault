@@ -118,7 +118,7 @@ export default function Testimonials() {
               <Stars count={t.stars} />
 
               {/* Review text */}
-              <p className="text-[12.5px] text-gray-500 leading-relaxed flex-1 mb-5">
+              <p className="text-[14px] text-gray-500 leading-relaxed flex-1 mb-5 flex">
                 {t.review}
               </p>
 

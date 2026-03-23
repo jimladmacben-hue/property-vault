@@ -66,17 +66,19 @@ export default function VerificationSection() {
         </p>
 
         {/* Steps */}
-<div className="w-full max-w-md flex flex-col gap-3 mb-10">
+<div className="w-full max-w-xl flex flex-col gap-3 mb-10 flex items-center justify-center">
   {steps.map((step, i) => (
     <div key={i} className="flex items-start gap-4">
       {/* Amber circle bullet */}
       <div className="w-8 h-8 rounded-full bg-[#F5A623] flex items-center justify-center flex-shrink-0 mt-0.5 shadow-md shadow-amber-900/30">
-        <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-          <circle cx="7" cy="7" r="3" fill="#1a1206" />
-        </svg>
+      <img
+          src="/icons/bullet.png"
+          alt="bullet point"
+          className="w-full h-full object-contain"
+        />
       </div>
       <p className="text-[14px] text-white/90 leading-relaxed pt-1">
-        <span className="font-bold text-white">{step.bold}</span>
+        <span className="font-normal text-white">{step.bold}</span>
         {step.rest}
       </p>
     </div>

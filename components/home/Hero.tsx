@@ -80,7 +80,7 @@ export default function Hero() {
 </div>
 
    {/* Search Card */}
-   <div className="mt-6 w-full max-w-7xl bg-white shadow-xl overflow-hidden">
+   <div className="mt-6 w-full max-w-7xl bg-white shadow-xl overflow-hidden rounded-xl">
           {/* Tabs */}
           <div className="flex gap-0 px-6 pt-4 pb-0">
             {tabs.map((tab) => (
