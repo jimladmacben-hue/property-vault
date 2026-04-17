@@ -1,3 +1,4 @@
+import Link from "next/link";
 const steps = [
   {
     bold: "Agent submits listing",
@@ -88,7 +89,7 @@ export default function VerificationSection() {
         {/* Buttons */}
         <div className="flex flex-col items-center gap-3 w-full">
           <a
-            href="#"
+            href="/properties"
             className="bg-[#F5A623] hover:bg-[#e09615] text-[#1a0f00] font-bold text-[14px] px-8 py-3.5 rounded-full flex items-center gap-2 transition-colors w-fit"
           >
             Browse Verified Properties

@@ -1,4 +1,5 @@
 "use client";
+import Link from "next/link";
 
 const agents = [
   {
@@ -214,7 +215,7 @@ export default function FeaturedAgents() {
         {/* Browse all button */}
         <div className="flex justify-center mt-10">
           <a
-            href="#"
+            href="/agents"
             className="border border-[#1a1f3c] text-[#1a1f3c] text-[13.5px] font-medium px-7 py-3 rounded-full hover:bg-[#1a1f3c] hover:text-white transition-all flex items-center gap-2"
           >
             Browse all Agents <span>→</span>

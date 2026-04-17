@@ -1,3 +1,4 @@
+import Link from "next/link";
 const cities = [
   {
     name: "Lagos",
@@ -100,7 +101,7 @@ export default function BrowseByCity() {
         {/* View all button */}
         <div className="flex justify-center mt-10">
           <a
-            href="#"
+            href="/properties"
             className="border border-[#1a1f3c] text-[#1a1f3c] text-[13.5px] font-normal px-7 py-3 rounded-full hover:bg-[#1a1f3c] hover:text-white transition-all flex items-center gap-2 bg-white"
           >
             View all locations <span>→</span>
