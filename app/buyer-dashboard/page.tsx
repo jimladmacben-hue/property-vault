@@ -1,103 +1,146 @@
 import Link from "next/link";
 
-// ─── Data ─────────────────────────────────────────────────────────────────────
+// ─── Stat Card ────────────────────────────────────────────────────────────────
 
-const enquiries = [
-  {
-    id: 1,
-    dot: "bg-green-500",
-    title: "4 Bed Detached Duplex, Lekki Phase 1",
-    meta: "₦45,000,000 · For Sale",
-    status: "Agent Replied",
-    statusColor: "text-green-600 bg-green-50 border-green-200",
-    reply: "\"Hello Tunde, thank you for your enquiry. I can arrange a viewing this Saturday at 10am. Please confirm if this works for you.\"",
-    agent: "Adewale Okon · Lagos Prime Realty · 2hrs ago",
-    showActions: true,
-  },
-  {
-    id: 2,
-    dot: "bg-amber-400",
-    title: "3 Bed Apartment, Maitama",
-    meta: "₦2,500,000/yr · For Rent",
-    status: "Awaiting reply",
-    statusColor: "text-amber-600 bg-amber-50 border-amber-200",
-    reply: "Enquiry sent · Waiting for agent response",
-    agent: "Sent yesterday · Agent usually replies in 3hrs",
-    showActions: false,
-  },
-  {
-    id: 3,
-    dot: "bg-gray-400",
-    title: "600sqm Land, Ajah",
-    meta: "₦18,000,000 · Land",
-    status: "Viewing Scheduled",
-    statusColor: "text-gray-500 bg-gray-100 border-gray-200",
-    reply: "Saturday 5 April · 2:00pm",
-    agent: "Confirmed by agent · 1 day ago",
-    showActions: false,
-  },
-];
-
-const savedProperties = [
-  { id: 1, image: "/images/invest-prop-1.jpg", title: "4 Bed Detached, Lekki Phase 1", location: "Lekki Phase 1, Lagos", price: "₦45,000,000", priceDrop: false },
-  { id: 2, image: "/images/invest-prop-2.jpg", title: "4 Bed Detached, Lekki Phase 1", location: "Lekki Phase 1, Lagos", price: "₦45,000,000", priceDrop: true },
-  { id: 3, image: "/images/invest-prop-3.jpg", title: "600sqm Land, Ajah", location: "Ajah, Lagos", price: "₦15,000,000", priceDrop: false },
-];
-
-const searchAlerts = [
-  { id: 1, title: "3–4 Bed · For Sale · Lekki", sub: "Under ₦50M · Verified only", newCount: 8, active: true },
-  { id: 2, title: "Land · Ajah or Ibeju-Lekki", sub: "C of O only · Any price", newCount: 4, active: true },
-  { id: 3, title: "2 Bed Flat · For Rent · Abuja", sub: "Under ₦2M/yr · Furnished", newCount: 2, active: true },
-];
-
-// ─── Toggle ───────────────────────────────────────────────────────────────────
-
-function Toggle({ active }: { active: boolean }) {
+function StatCard({
+  label,
+  value,
+  suffix,
+  sub,
+  badge,
+  dark,
+}: {
+  label: string;
+  value: string;
+  suffix?: string;
+  sub?: string;
+  badge?: string;
+  dark?: boolean;
+}) {
   return (
-    <div className={`relative w-11 h-6 rounded-full flex-shrink-0 ${active ? "bg-[#1a1f3c]" : "bg-gray-200"}`}>
-      <span className={`absolute top-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform duration-200 ${active ? "translate-x-5" : "translate-x-0.5"}`} />
+    <div className={`rounded-2xl p-5 flex flex-col gap-3 ${dark ? "bg-[#080d28]" : "bg-white border border-gray-100"}`}>
+      <div className="flex items-center justify-between">
+        <p className={`text-xs font-bold tracking-widest uppercase ${dark ? "text-white/40" : "text-gray-400"}`}>
+          {label}
+        </p>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+          <circle cx="12" cy="12" r="10" stroke={dark ? "rgba(255,255,255,0.2)" : "#d1d5db"} strokeWidth="1.5" />
+          <path d="M12 8v4M12 16h.01" stroke={dark ? "rgba(255,255,255,0.3)" : "#9ca3af"} strokeWidth="1.5" strokeLinecap="round" />
+        </svg>
+      </div>
+      <div>
+        <p className={`text-3xl font-black ${dark ? "text-white" : "text-[#1a1f3c]"}`}>
+          {value}
+          {suffix && <span className="text-[#F5A623] text-2xl">{suffix}</span>}
+        </p>
+        {sub && <p className={`text-xs mt-1 ${dark ? "text-white/40" : "text-gray-400"}`}>{sub}</p>}
+      </div>
+      {badge && (
+        <span className="inline-flex items-center gap-1 text-xs font-bold text-green-400 bg-green-400/10 px-3 py-1 rounded-full w-fit">
+          {badge}
+        </span>
+      )}
+    </div>
+  );
+}
+
+// ─── Enquiry Item ─────────────────────────────────────────────────────────────
+
+function EnquiryItem({
+  initials,
+  color,
+  name,
+  property,
+  time,
+  status,
+  message,
+}: {
+  initials: string;
+  color: string;
+  name: string;
+  property: string;
+  time: string;
+  status: "New" | "Replied";
+  message: string;
+}) {
+  return (
+    <div className="py-4 border-b border-gray-100 last:border-0">
+      <div className="flex items-start gap-3">
+        <div className={`w-9 h-9 rounded-full flex items-center justify-center text-white text-xs font-black flex-shrink-0 ${color}`}>
+          {initials}
+        </div>
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center justify-between gap-2 mb-0.5">
+            <p className="text-sm font-bold text-[#1a1f3c]">{name}</p>
+            <div className="flex items-center gap-2 flex-shrink-0">
+              <span className="text-xs text-gray-400">{time}</span>
+              <span className={`text-[10px] font-bold px-2.5 py-0.5 rounded-full border ${
+                status === "New"
+                  ? "border-gray-300 text-gray-500"
+                  : "border-green-300 text-green-600 bg-green-50"
+              }`}>
+                {status}
+              </span>
+            </div>
+          </div>
+          <p className="text-xs text-gray-400 mb-1">{property}</p>
+          <p className="text-sm text-gray-600 leading-relaxed mb-3">{message}</p>
+          <div className="flex gap-2">
+            <button className="bg-[#1a1f3c] hover:bg-[#2a3060] text-white text-xs font-bold px-4 py-1.5 rounded-lg transition-colors">
+              Reply
+            </button>
+            <button className="bg-green-500 hover:bg-green-600 text-white text-xs font-bold px-4 py-1.5 rounded-lg transition-colors">
+              Whatsapp
+            </button>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
 
 // ─── Main Page ────────────────────────────────────────────────────────────────
 
-export default function BuyerOverviewPage() {
+export default function DashboardOverview() {
   return (
-    <div className="p-6 sm:p-8">
+    <div className="pt-20 px-6 sm:px-8 pb-6 sm:pb-8">
 
       {/* ── Top bar ── */}
       <div className="flex items-start justify-between mb-6">
         <div>
-          <h1 className="text-2xl font-black text-[#1a1f3c]">Welcome back, Tunde 🤝</h1>
+          <h1 className="text-2xl font-black text-[#1a1f3c]">
+            Good morning, Adewale 🤝
+          </h1>
           <p className="text-sm text-gray-400 mt-0.5">
-            Thursday, 2 April 2026 · You have 2 agent replies waiting
+            Thursday, 2 April 2026 · Here&apos;s what needs your attention today
           </p>
         </div>
         <div className="flex items-center gap-3">
           <button className="relative w-10 h-10 rounded-full border border-gray-200 bg-white flex items-center justify-center hover:border-gray-300 transition-colors">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-              <path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 01-3.46 0" stroke="#1a1f3c" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+              <path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 01-3.46 0" stroke="#1a1f3c" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
-            <span className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 text-white text-[9px] font-black rounded-full flex items-center justify-center">2</span>
+            <span className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 text-white text-[9px] font-black rounded-full flex items-center justify-center">3</span>
           </button>
-          <Link href="/properties"
-            className="flex items-center gap-2 bg-[#1a1f3c] hover:bg-[#2a3060] text-white text-sm font-bold px-5 py-2.5 rounded-full transition-colors shadow-md">
-            + Browse Properties
+          <Link
+            href="/dashboard/listings/new"
+            className="flex items-center gap-2 bg-[#1a1f3c] hover:bg-[#2a3060] text-white text-sm font-bold px-5 py-2.5 rounded-full transition-colors shadow-md"
+          >
+            <span className="text-base leading-none">+</span>
+            New listing
           </Link>
         </div>
       </div>
 
       {/* ── Alert banner ── */}
-      <div className="flex items-center justify-between gap-4 bg-green-50 border border-green-200 rounded-2xl px-5 py-4 mb-6">
-        <div className="flex items-center gap-3">
-          <div className="w-8 h-8 rounded-full bg-green-500 flex items-center justify-center flex-shrink-0">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-              <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2v10z" stroke="white" strokeWidth="1.5" strokeLinejoin="round"/>
-            </svg>
-          </div>
-          <p className="text-sm text-green-800 font-medium">
-            <strong>2 agents</strong> have replied to your enquiries. Check their responses and arrange viewings.
+      <div className="flex items-center justify-between gap-4 bg-amber-50 border border-amber-200 rounded-2xl px-5 py-4 mb-6">
+        <div className="flex items-start gap-3">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" className="flex-shrink-0 mt-0.5">
+            <path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" stroke="#F5A623" strokeWidth="1.5" strokeLinejoin="round" />
+            <path d="M12 9v4M12 17h.01" stroke="#F5A623" strokeWidth="1.5" strokeLinecap="round" />
+          </svg>
+          <p className="text-sm text-amber-800 leading-relaxed">
+            You have <strong>5 new enquiries</strong> waiting for a response. Agents who reply within 2 hours get 3× more conversions.
           </p>
         </div>
         <button className="flex-shrink-0 text-sm font-bold text-[#1a1f3c] border border-gray-300 px-4 py-2 rounded-xl hover:border-[#1a1f3c] transition-colors whitespace-nowrap">
@@ -105,25 +148,33 @@ export default function BuyerOverviewPage() {
         </button>
       </div>
 
-      {/* ── 3 stat cards ── */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
-        {[
-          { label: "SAVED PROPERTIES", icon: "❤️", value: "9", suffix: "saved properties", badge: "↓ 2 price drops", badgeColor: "text-amber-600" },
-          { label: "MY ENQUIRIES", icon: "💬", value: "4", suffix: "active enquiries", badge: "+2 new replies", badgeColor: "text-green-600" },
-          { label: "ALERTS", icon: "🔔", value: "3", suffix: "active search alerts", badge: "+14 new", badgeColor: "text-green-600" },
-        ].map((stat) => (
-          <div key={stat.label} className="bg-white rounded-2xl border border-gray-100 p-5">
-            <div className="flex items-center justify-between mb-3">
-              <p className="text-[10px] font-bold tracking-widest text-gray-400 uppercase">{stat.label}</p>
-              <span className="text-base">{stat.icon}</span>
-            </div>
-            <p className="text-3xl font-black text-[#1a1f3c] mb-0.5">
-              {stat.value}
-              <span className="text-[#F5A623] text-xl font-black"> {stat.suffix}</span>
-            </p>
-            <p className={`text-xs font-semibold ${stat.badgeColor}`}>{stat.badge}</p>
-          </div>
-        ))}
+      {/* ── 4 stat cards ── */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+        <StatCard
+          dark
+          label="Total Listings"
+          value="9"
+          sub="active listings"
+          badge="↑ +2 new"
+        />
+        <StatCard
+          label="My Enquiries"
+          value="12"
+          suffix=" total enquiries"
+          badge="↑ +5 unread messages"
+        />
+        <StatCard
+          label="Total Views"
+          value="1567"
+          suffix=" views"
+          sub="Listing views this month"
+        />
+        <StatCard
+          label="My Ratings"
+          value="4.9"
+          suffix=" avg. rating"
+          sub="+128 reviews"
+        />
       </div>
 
       {/* ── Two-column layout ── */}
@@ -137,115 +188,106 @@ export default function BuyerOverviewPage() {
               View all
             </button>
           </div>
-          <p className="text-xs text-gray-400 mb-5">Track your conversations with agents</p>
+          <p className="text-xs text-gray-400 mb-4">5 unread · Reply to stay visible</p>
 
-          <div className="space-y-5">
-            {enquiries.map((e) => (
-              <div key={e.id} className="flex items-start gap-3">
-                {/* Status dot */}
-                <div className={`w-2.5 h-2.5 rounded-full mt-1.5 flex-shrink-0 ${e.dot}`} />
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm font-bold text-[#1a1f3c] mb-0.5">{e.title}</p>
-                  <p className="text-xs text-gray-400 mb-2">{e.meta}</p>
-                  <span className={`inline-flex text-[10px] font-bold px-2.5 py-1 rounded-full border mb-3 ${e.statusColor}`}>
-                    {e.status}
-                  </span>
-                  <p className="text-sm text-gray-600 leading-relaxed mb-1">{e.reply}</p>
-                  <p className="text-xs text-gray-400 mb-3">{e.agent}</p>
-                  {e.showActions && (
-                    <div className="flex gap-2">
-                      <button className="bg-[#1a1f3c] hover:bg-[#2a3060] text-white text-xs font-bold px-4 py-1.5 rounded-lg transition-colors">
-                        Reply
-                      </button>
-                      <button className="bg-green-500 hover:bg-green-600 text-white text-xs font-bold px-4 py-1.5 rounded-lg transition-colors">
-                        Whatsapp
-                      </button>
-                    </div>
-                  )}
-                </div>
-              </div>
-            ))}
-          </div>
+          <EnquiryItem
+            initials="TO" color="bg-[#1a1f3c]"
+            name="Tunde Okafor" property="4 Bed Detached, Lekki Phase 1"
+            time="2 hrs ago" status="New"
+            message="I am interested and would like to arrange a viewing this weekend..."
+          />
+          <EnquiryItem
+            initials="AE" color="bg-green-700"
+            name="Amaka Eze" property="600sqm Land, Ajah"
+            time="5 hrs ago" status="New"
+            message="What documents are available for this land? I'm buying from UK..."
+          />
+          <EnquiryItem
+            initials="BI" color="bg-gray-600"
+            name="Blessing Igwe" property="3 Bed Flat, Victoria Island"
+            time="Yesterday" status="Replied"
+            message="Is the price negotiable? Can we schedule a visit tomorrow?"
+          />
         </div>
 
         {/* Right column */}
         <div className="w-full lg:w-80 xl:w-96 flex-shrink-0 space-y-5">
 
-          {/* Saved Properties */}
+          {/* Viewing Schedules */}
           <div className="bg-white rounded-2xl border border-gray-100 p-5">
-            <div className="flex items-center justify-between mb-1">
-              <h2 className="text-base font-black text-[#1a1f3c]">Saved Properties</h2>
-              <button className="text-xs font-bold text-[#1a1f3c] border border-gray-200 px-3 py-1.5 rounded-full hover:border-[#1a1f3c] transition-colors">
-                View all
-              </button>
-            </div>
-            <p className="text-xs text-gray-400 mb-4">8 saved · 2 price drops</p>
-
-            <div className="space-y-4">
-              {savedProperties.map((p) => (
-                <div key={p.id} className="flex items-center gap-3">
-                  <div className="w-14 h-12 rounded-xl overflow-hidden flex-shrink-0 bg-gray-100">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src={p.image} alt={p.title} className="w-full h-full object-cover" />
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-xs font-bold text-[#1a1f3c] truncate">{p.title}</p>
-                    <p className="text-xs text-gray-400 truncate">{p.location}</p>
-                    <div className="flex items-center gap-2 mt-0.5">
-                      <p className="text-xs font-bold text-[#1a1f3c]">{p.price}</p>
-                      {p.priceDrop && (
-                        <span className="text-[9px] font-bold text-amber-600 bg-amber-50 px-1.5 py-0.5 rounded-full">
-                          Price drop
-                        </span>
-                      )}
-                    </div>
-                  </div>
-                  <div className="flex flex-col gap-1 flex-shrink-0">
-                    <button className="bg-[#1a1f3c] hover:bg-[#2a3060] text-white text-[10px] font-bold px-3 py-1.5 rounded-lg transition-colors">
-                      Enquire
-                    </button>
-                    <button className="text-[10px] font-semibold text-gray-400 hover:text-red-500 transition-colors text-center">
-                      Remove
-                    </button>
-                  </div>
-                </div>
-              ))}
-            </div>
+            <h2 className="text-base font-black text-[#1a1f3c] mb-4">Upcoming Viewing Schedules</h2>
+            <table className="w-full text-xs">
+              <thead>
+                <tr className="text-gray-400 border-b border-gray-100">
+                  <th className="text-left pb-2 font-semibold">Time</th>
+                  <th className="text-left pb-2 font-semibold">Name</th>
+                  <th className="text-left pb-2 font-semibold">Property/location</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-gray-50">
+                {[
+                  { time: "2:00pm", name: "Name Surname", property: "4 bedroom detached, Lekki" },
+                  { time: "4:00pm", name: "Name Surname", property: "4 bedroom detached, Lekki" },
+                  { time: "9:00pm", name: "Name Surname", property: "4 bedroom detached, Lekki" },
+                ].map((v, i) => (
+                  <tr key={i}>
+                    <td className="py-2.5 font-semibold text-[#1a1f3c]">{v.time}</td>
+                    <td className="py-2.5 text-gray-500">{v.name}</td>
+                    <td className="py-2.5 text-gray-500">{v.property}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
 
-          {/* Search Alerts */}
+          {/* Hottest Property Insight */}
           <div className="bg-white rounded-2xl border border-gray-100 p-5">
-            <div className="flex items-center justify-between mb-1">
-              <h2 className="text-base font-black text-[#1a1f3c]">Search Alert</h2>
-              <button className="text-xs font-bold text-[#1a1f3c] border border-gray-200 px-3 py-1.5 rounded-full hover:border-[#1a1f3c] transition-colors">
-                View all
-              </button>
+            <h2 className="text-base font-black text-[#1a1f3c] mb-4">
+              Hottest Property insight
+            </h2>
+            <div className="flex items-center gap-3 mb-3">
+              <div className="w-20 h-16 rounded-xl overflow-hidden flex-shrink-0 bg-gray-100">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src="/images/invest-prop-1.jpg" alt="Property" className="w-full h-full object-cover" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-bold text-[#1a1f3c] leading-snug mb-1">
+                  4 Bed Detached, Lekki Phase 1
+                </p>
+                <p className="text-xs text-gray-400">Most views this week : <span className="font-bold text-[#1a1f3c]">1245</span></p>
+                <p className="text-xs text-gray-400">Hottest lead count : <span className="font-bold text-[#1a1f3c]">10</span></p>
+              </div>
             </div>
-            <p className="text-xs text-gray-400 mb-4">14 new matching listings today</p>
-
-            <div className="space-y-3">
-              {searchAlerts.map((alert) => (
-                <div key={alert.id} className="flex items-center gap-3">
-                  <div className="w-8 h-8 rounded-full bg-amber-100 flex items-center justify-center flex-shrink-0">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
-                      <path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 01-3.46 0" stroke="#F5A623" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-                    </svg>
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-xs font-bold text-[#1a1f3c] truncate">{alert.title}</p>
-                    <p className="text-[10px] text-gray-400 truncate">{alert.sub}</p>
-                  </div>
-                  <span className="text-[10px] font-bold text-green-600 bg-green-50 px-2 py-0.5 rounded-full flex-shrink-0">
-                    {alert.newCount} new
-                  </span>
-                  <Toggle active={alert.active} />
-                </div>
-              ))}
-            </div>
+            <button className="w-full bg-[#1a1f3c] hover:bg-[#2a3060] text-white text-xs font-bold py-2.5 rounded-xl transition-colors">
+              See listing
+            </button>
           </div>
 
+          {/* Tip banner */}
+          <div className="flex items-start gap-3 bg-amber-50 border border-amber-100 rounded-2xl px-4 py-3.5">
+            <span className="text-lg flex-shrink-0">💡</span>
+            <p className="text-xs text-amber-800 leading-relaxed">
+              Your Saturday listings get 2× more views. Consider scheduling new listings to go live on Friday evenings for maximum exposure.
+            </p>
+          </div>
         </div>
+
       </div>
+
+      {/* ── My Listings preview ── */}
+      <div className="mt-6 bg-white rounded-2xl border border-gray-100 p-6">
+        <div className="flex items-center justify-between mb-1">
+          <h2 className="text-base font-black text-[#1a1f3c]">My listings</h2>
+          <Link
+            href="/dashboard/listings/new"
+            className="flex items-center gap-1.5 bg-[#1a1f3c] hover:bg-[#2a3060] text-white text-xs font-bold px-4 py-2 rounded-full transition-colors"
+          >
+            <span>+</span> New listing
+          </Link>
+        </div>
+        <p className="text-xs text-gray-400">12 active · 2 pending · 1 draft</p>
+      </div>
+
     </div>
   );
 }

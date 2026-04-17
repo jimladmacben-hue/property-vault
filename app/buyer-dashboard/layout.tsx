@@ -1,10 +1,17 @@
-import BuyerDashboardSidebar from "@/components/buyer-dashboard/BuyerDashboardSidebar";
+import DashboardSidebar from "@/components/buyer-dashboard/DashboardSidebar";
 
-export default function BuyerDashboardLayout({ children }: { children: React.ReactNode }) {
+export default function DashboardLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
     <div className="min-h-screen bg-gray-50 flex">
-      <BuyerDashboardSidebar />
-      <main className="flex-1 ml-64 min-h-screen overflow-y-auto">
+      {/* Sidebar — fixed 256px */}
+      <DashboardSidebar />
+
+      {/* Main content — offset by sidebar width */}
+      <main className="flex-1 ml-64 min-h-screen overflow-y-auto pt-10 px-6">
         {children}
       </main>
     </div>

@@ -9,7 +9,7 @@ const navSections = [
     items: [
       {
         label: "Overview",
-        href: "/dashboard",
+        href: "/buyer-dashboard",
         badge: null,
         icon: (
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
@@ -22,7 +22,7 @@ const navSections = [
       },
       {
         label: "My listings",
-        href: "/dashboard/listings",
+        href: "/buyer-dashboard/listings",
         badge: 9,
         badgeColor: "bg-red-500",
         icon: (
@@ -34,7 +34,7 @@ const navSections = [
       },
       {
         label: "Enquiries",
-        href: "/dashboard/enquiries",
+        href: "/buyer-dashboard/enquiries",
         badge: 4,
         badgeColor: "bg-red-500",
         icon: (
@@ -50,7 +50,7 @@ const navSections = [
     items: [
       {
         label: "Analytics",
-        href: "/dashboard/analytics",
+        href: "/buyer-dashboard/analytics",
         badge: null,
         icon: (
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
@@ -60,7 +60,7 @@ const navSections = [
       },
       {
         label: "Reviews",
-        href: "/dashboard/reviews",
+        href: "/buyer-dashboard/reviews",
         badge: null,
         icon: (
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
@@ -75,7 +75,7 @@ const navSections = [
     items: [
       {
         label: "Subscription",
-        href: "/dashboard/subscription",
+        href: "/buyer-dashboard/subscription",
         badge: null,
         icon: (
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
@@ -86,7 +86,7 @@ const navSections = [
       },
       {
         label: "Settings",
-        href: "/dashboard/settings",
+        href: "/buyer-dashboard/settings",
         badge: null,
         icon: (
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
@@ -107,10 +107,10 @@ export default function DashboardSidebar() {
       {/* Logo */}
       <div className="px-6 py-5 border-b border-white/10">
         <p className="text-white font-black text-lg leading-tight">Property Vault</p>
-        <p className="text-white/40 text-xs font-medium mt-0.5">Agent Dashboard</p>
+        <p className="text-white/40 text-xs font-medium mt-0.5">Buyer Dashboard</p>
       </div>
 
-      {/* Agent profile */}
+      {/* Buyer profile */}
       <div className="px-6 py-4 border-b border-white/10">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-full bg-gray-500 overflow-hidden flex-shrink-0">
@@ -124,7 +124,7 @@ export default function DashboardSidebar() {
           </div>
           <div className="min-w-0">
             <p className="text-white text-sm font-bold truncate">Adewale Okonkwo</p>
-            <p className="text-white/40 text-xs truncate">Verified Agent · Lagos Prime</p>
+            <p className="text-white/40 text-xs truncate">Verified Buyer · Lagos Prime</p>
           </div>
         </div>
       </div>
