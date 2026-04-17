@@ -47,7 +47,7 @@ export default function Footer() {
             <img
                 src="/images/logo-white.png"   
                 alt="Property Vault Logo"
-                className="w-full h-full object-contain"
+                className="w-full h-full object-contain" 
               />
             </div>
 

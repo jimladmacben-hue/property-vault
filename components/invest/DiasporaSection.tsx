@@ -55,7 +55,7 @@ export default function DiasporaSection() {
             Over 40% of Property Vault investment enquiries come from Nigerians in
             the UK, US, and Canada. We built the platform to make remote buying
             safe, simple, and transparent.
-          </p>
+          </p>z
         </div>
 
         {/* ── Two-column: video + steps ── */}
