@@ -43,37 +43,42 @@ export default function PropertiesGrid({ properties }: PropertiesGridProps) {
                 }`}
               >
                 {/* Image */}
-                <div className="relative flex-shrink-0 w-[200px] h-[200px]">
+                <Link href={`/properties/${p.id}`} className="relative flex-shrink-0 w-[200px] h-[200px] block group overflow-hidden">
                   <img
                     src={p.image}
                     alt={p.title}
-                    className="w-full h-full object-cover"
+                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                   />
                   {/* Badge */}
-                  <span className="absolute top-2 left-2 bg-green-700 text-white text-[8.5px] font-bold px-2 py-0.5 rounded-full flex items-center gap-1">
+                  <span className="absolute top-2 left-2 bg-green-700 text-white text-[8.5px] font-bold px-2 py-0.5 rounded-full flex items-center gap-1 z-10">
                     {p.badge}
                     <svg width="7" height="7" viewBox="0 0 12 12" fill="none">
                       <path d="M2.5 6L5 8.5L9.5 4" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
                     </svg>
                   </span>
                   {/* Price */}
-                  <span className="absolute bottom-2 left-2 bg-[#1a1f3c] text-white text-[16px] font-normal px-2 py-0.5 rounded-full">
+                  <span className="absolute bottom-2 left-2 bg-[#1a1f3c] text-white text-[16px] font-normal px-2 py-0.5 rounded-full z-10">
                     {p.price}
                   </span>
                   {/* Heart */}
-                  <button className="absolute top-2 right-2 w-6 h-6 bg-white rounded-full flex items-center justify-center shadow">
+                  <button 
+                    onClick={(e) => { e.preventDefault(); e.stopPropagation(); }}
+                    className="absolute top-2 right-2 w-6 h-6 bg-white rounded-full flex items-center justify-center shadow z-20"
+                  >
                     <svg width="11" height="11" viewBox="0 0 24 24" fill="none">
                       <path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z" stroke="#1a1f3c" strokeWidth="1.5" fill="none" />
                     </svg>
                   </button>
-                </div>
+                </Link>
 
                 {/* Content */}
                 <div className="flex-1 px-4 py-3 flex flex-col justify-between">
                   <div>
-                    <h3 className="text-[20px] font-semibold text-[#1a1f3c] mb-1">
-                      {p.title}
-                    </h3>
+                    <Link href={`/properties/${p.id}`}>
+                      <h3 className="text-[20px] font-semibold text-[#1a1f3c] mb-1 hover:text-[#F5A623] transition-colors">
+                        {p.title}
+                      </h3>
+                    </Link>
                     <div className="flex items-center gap-1 mb-2">
                       <PinIcon />
                       <span className="text-[16px] text-gray-500">{p.location}</span>

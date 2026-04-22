@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 
 const filterTabs = ["All", "Rent", "Buy", "Commercial", "Land", "Shortlet"];
 
@@ -122,20 +123,22 @@ interface Listing {
 function ListingCard({ listing }: { listing: Listing }) {
   return (
     <div className="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-shadow">
-      <div className="relative">
-        <img src={listing.image} alt={listing.title} className="w-full h-[200px] object-cover" />
-        <span className="absolute top-3 left-3 bg-green-700 text-white text-[9.5px] font-bold px-2.5 py-1 rounded-full flex items-center gap-1">
+      <Link href={`/properties/${listing.id}`} className="block relative overflow-hidden group">
+        <img src={listing.image} alt={listing.title} className="w-full h-[200px] object-cover transition-transform duration-500 group-hover:scale-110" />
+        <span className="absolute top-3 left-3 bg-green-700 text-white text-[9.5px] font-bold px-2.5 py-1 rounded-full flex items-center gap-1 z-10">
           {listing.badge}
           <svg width="9" height="9" viewBox="0 0 12 12" fill="none">
             <path d="M2.5 6L5 8.5L9.5 4" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
           </svg>
         </span>
-        <span className="absolute bottom-3 right-3 bg-white text-[#1a1f3c] text-[11px] font-bold px-2.5 py-1 rounded-full shadow">
+        <span className="absolute bottom-3 right-3 bg-white text-[#1a1f3c] text-[11px] font-bold px-2.5 py-1 rounded-full shadow z-10">
           {listing.price}
         </span>
-      </div>
+      </Link>
       <div className="p-3.5">
-        <h3 className="text-[13px] font-bold text-[#1a1f3c] mb-1">{listing.title}</h3>
+        <Link href={`/properties/${listing.id}`}>
+          <h3 className="text-[13px] font-bold text-[#1a1f3c] mb-1 hover:text-[#F5A623] transition-colors cursor-pointer">{listing.title}</h3>
+        </Link>
         <div className="flex items-center gap-1 mb-2.5">
           <PinIcon />
           <span className="text-[11px] text-gray-500">{listing.location}</span>
@@ -160,9 +163,9 @@ function ListingCard({ listing }: { listing: Listing }) {
             </div>
             <span className="text-[10.5px] text-gray-500">{listing.agent}</span>
           </div>
-          <a href="#" className="text-[10.5px] font-semibold text-[#1a1f3c] flex items-center gap-1 hover:text-[#F5A623]">
+          <Link href={`/properties/${listing.id}`} className="text-[10.5px] font-semibold text-[#1a1f3c] flex items-center gap-1 hover:text-[#F5A623]">
             Details <span>→</span>
-          </a>
+          </Link>
         </div>
       </div>
     </div>

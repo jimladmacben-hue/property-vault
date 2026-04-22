@@ -156,28 +156,32 @@ function PropertyCard({ property }: { property: Property }) {
   return (
     <div className="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-shadow">
       {/* Image */}
-      <div className="relative">
+      <Link href={`/properties/${property.id}`} className="block relative overflow-hidden group">
         <img
           src={property.image}
           alt={property.title}
-          className="w-full h-[250px] object-cover"
+          className="w-full h-[250px] object-cover transition-transform duration-500 group-hover:scale-110"
         />
         {/* Badge top-left */}
-        <span className={`absolute top-3 left-3 ${property.badgeColor} text-white text-[10px] font-bold px-2.5 py-1 rounded-full flex items-center gap-1`}>
+        <span className={`absolute top-3 left-3 ${property.badgeColor} text-white text-[10px] font-bold px-2.5 py-1 rounded-full flex items-center gap-1 z-10`}>
           {property.badge}
           <svg width="10" height="10" viewBox="0 0 12 12" fill="none">
             <path d="M2.5 6L5 8.5L9.5 4" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
           </svg>
         </span>
         {/* Price bottom-right */}
-        <span className="absolute bottom-3 right-3 bg-white text-[#1a1f3c] text-[11px] font-bold px-2.5 py-1 rounded-full shadow">
+        <span className="absolute bottom-3 right-3 bg-white text-[#1a1f3c] text-[11px] font-bold px-2.5 py-1 rounded-full shadow z-10">
           {property.price}
         </span>
-      </div>
+      </Link>
 
       {/* Body */}
       <div className="p-4">
-        <h3 className="text-[14px] font-bold text-[#1a1f3c] mb-1">{property.title}</h3>
+        <Link href={`/properties/${property.id}`}>
+          <h3 className="text-[14px] font-bold text-[#1a1f3c] mb-1 hover:text-[#F5A623] transition-colors cursor-pointer">
+            {property.title}
+          </h3>
+        </Link>
 
         {/* Location */}
         <div className="flex items-center gap-1 mb-3">
@@ -206,9 +210,12 @@ function PropertyCard({ property }: { property: Property }) {
             </div>
             <span className="text-[11px] text-gray-500">{property.agent}</span>
           </div>
-          <a href="#" className="text-[11px] font-semibold text-[#1a1f3c] flex items-center gap-1 hover:text-[#F5A623] transition-colors">
+          <Link
+            href={`/properties/${property.id}`}
+            className="text-[11px] font-semibold text-[#1a1f3c] flex items-center gap-1 hover:text-[#F5A623] transition-colors"
+          >
             Details <span>→</span>
-          </a>
+          </Link>
         </div>
       </div>
     </div>

@@ -87,12 +87,12 @@ export default function BrowseByCity() {
       <p className="text-white/70 text-[11px] mb-2">{city.state}</p>
 
       {/* Button visible only on hover */}
-      <a
-        href="#"
+      <Link
+        href={`/properties?city=${city.name}`}
         className="inline-flex items-center gap-1.5 bg-white/15 hover:bg-white/25 backdrop-blur-sm text-white text-[11px] font-semibold px-3 py-1.5 rounded-full transition-all opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 duration-300"
       >
         Browse now <span>→</span>
-      </a>
+      </Link>
     </div>
   </div>
 ))}
