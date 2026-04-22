@@ -2,10 +2,13 @@
 
 import { useState } from "react";
 
-export default function PropertiesPagination() {
+interface PropertiesPaginationProps {
+  total: number;
+}
+
+export default function PropertiesPagination({ total }: PropertiesPaginationProps) {
   const [currentPage, setCurrentPage] = useState(1);
   const [perPage, setPerPage] = useState(20);
-  const total = 2847;
   const pages = [1, 2, 3, 4, "...", 90];
 
   return (
