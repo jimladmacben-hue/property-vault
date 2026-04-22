@@ -268,7 +268,7 @@ export default function EnquiriesPage() {
               </div>
             </div>
             <Link
-              href="/properties/1"
+              href="/agent-dashboard/listings/view/1"
               className="flex-shrink-0 flex items-center gap-1.5 border border-gray-200 text-sm font-bold text-[#1a1f3c] px-4 py-2 rounded-xl hover:border-[#1a1f3c] transition-colors"
             >
               View listing →

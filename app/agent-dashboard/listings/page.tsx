@@ -67,6 +67,7 @@ export default function MyListingsPage() {
   const [maxPrice, setMaxPrice] = useState("");
   const [selected, setSelected] = useState<number[]>([]);
   const [actionOpen, setActionOpen] = useState<number | null>(null);
+  const [confirmModal, setConfirmModal] = useState<{ type: "Delete" | "Pause", id: number } | null>(null);
 
   const toggleSelect = (id: number) =>
     setSelected((prev) => prev.includes(id) ? prev.filter((i) => i !== id) : [...prev, id]);
@@ -81,7 +82,42 @@ export default function MyListingsPage() {
   });
 
   return (
-    <div className="p-6 sm:p-8">
+    <div className="p-6 sm:p-8 relative">
+
+      {/* ── Confirm Modal ── */}
+      {confirmModal && (
+        <div className="fixed inset-0 bg-[#1a1f3c]/40 backdrop-blur-sm z-[100] flex items-center justify-center p-4">
+          <div className="bg-white rounded-[32px] p-8 max-w-sm w-full shadow-2xl animate-in zoom-in-95 duration-200">
+            <div className={`w-14 h-14 rounded-2xl flex items-center justify-center mb-6 ${confirmModal.type === "Delete" ? "bg-red-50 text-red-500" : "bg-amber-50 text-amber-500"}`}>
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                {confirmModal.type === "Delete" ? (
+                  <path d="M3 6h18M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2" />
+                ) : (
+                  <path d="M10 9v6m4-6v6m7-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                )}
+              </svg>
+            </div>
+            <h3 className="text-xl font-black text-[#1a1f3c] mb-2">{confirmModal.type} Listing?</h3>
+            <p className="text-sm text-gray-400 leading-relaxed mb-8">
+              Are you sure you want to {confirmModal.type.toLowerCase()} this listing? This action {confirmModal.type === "Delete" ? "cannot be undone" : "can be reversed later"}.
+            </p>
+            <div className="flex gap-3">
+              <button
+                onClick={() => setConfirmModal(null)}
+                className="flex-1 px-6 py-3 rounded-xl text-sm font-bold text-gray-500 hover:bg-gray-50 transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={() => setConfirmModal(null)}
+                className={`flex-1 px-6 py-3 rounded-xl text-sm font-bold text-white transition-all ${confirmModal.type === "Delete" ? "bg-red-500 hover:bg-red-600 shadow-red-500/20" : "bg-[#1a1f3c] hover:bg-[#2a3060]"} shadow-lg`}
+              >
+                Confirm
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* ── Top bar ── */}
       <div className="flex items-start justify-between mb-6">
@@ -97,7 +133,7 @@ export default function MyListingsPage() {
             <span className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 text-white text-[9px] font-black rounded-full flex items-center justify-center">3</span>
           </button>
           <Link
-            href="/dashboard/listings/new"
+            href="/agent-dashboard/listings/new"
             className="flex items-center gap-2 bg-[#1a1f3c] hover:bg-[#2a3060] text-white text-sm font-bold px-5 py-2.5 rounded-full transition-colors shadow-md"
           >
             <span className="text-base leading-none">+</span> New listing
@@ -105,40 +141,36 @@ export default function MyListingsPage() {
         </div>
       </div>
 
-      {/* ── Search + Filters card ── */}
-      <div className="bg-white rounded-2xl border border-gray-100 p-5 mb-6 space-y-4">
-        {/* Search */}
-        <div className="relative">
-          <svg className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400" width="16" height="16" viewBox="0 0 24 24" fill="none">
-            <circle cx="11" cy="11" r="8" stroke="currentColor" strokeWidth="1.5" />
-            <path d="M21 21l-4.35-4.35" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-          </svg>
-          <input
-            type="text"
-            placeholder="Search by keyword, location or client"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-xl text-sm font-medium text-[#1a1f3c] placeholder-gray-400 focus:outline-none focus:border-[#F5A623] focus:ring-2 focus:ring-[#F5A623]/20 transition-all"
-          />
-        </div>
-
-        {/* Filters */}
-        <div className="flex flex-wrap items-center gap-3">
-          <span className="text-sm font-semibold text-gray-400">Filter by:</span>
+      {/* ── Filters ── */}
+      <div className="bg-white rounded-2xl border border-gray-100 p-4 mb-6">
+        <div className="flex flex-wrap items-center gap-4">
+          <div className="relative flex-1 min-w-[240px]">
+            <svg className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" width="16" height="16" viewBox="0 0 24 24" fill="none">
+              <circle cx="11" cy="11" r="8" stroke="currentColor" strokeWidth="1.5" />
+              <path d="M21 21l-4.35-4.35" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+            </svg>
+            <input
+              type="text"
+              placeholder="Search by title, location..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-xl text-sm placeholder-gray-400 focus:outline-none focus:border-[#F5A623] transition-all"
+            />
+          </div>
 
           <div className="flex items-center gap-1.5">
             <span className="text-xs text-gray-400">Status</span>
-            <FilterSelect value={status} options={["All", "Active", "Sold", "Under offer", "Pending", "Draft"]} onChange={setStatus} />
+            <FilterSelect value={status} options={["All", "Active", "Sold", "Under offer", "Draft"]} onChange={setStatus} />
           </div>
 
           <div className="flex items-center gap-1.5">
-            <span className="text-xs text-gray-400">Property type</span>
-            <FilterSelect value={propertyType} options={["Residential", "Commercial", "Land", "Shortlet"]} onChange={setPropertyType} />
+            <span className="text-xs text-gray-400">Type</span>
+            <FilterSelect value={propertyType} options={["All", "Residential", "Commercial", "Land"]} onChange={setPropertyType} />
           </div>
 
           <div className="flex items-center gap-1.5">
-            <span className="text-xs text-gray-400">Price range</span>
-            <div className="flex items-center gap-1.5">
+            <span className="text-xs text-gray-400">Price Range</span>
+            <div className="flex items-center gap-2">
               <input
                 type="text"
                 placeholder="Min"
@@ -146,7 +178,7 @@ export default function MyListingsPage() {
                 onChange={(e) => setMinPrice(e.target.value)}
                 className="w-20 px-3 py-2 border border-gray-200 rounded-xl text-sm text-[#1a1f3c] placeholder-gray-400 focus:outline-none focus:border-[#F5A623] transition-all"
               />
-              <span className="text-gray-300">—</span>
+              <span className="text-gray-300">-</span>
               <input
                 type="text"
                 placeholder="Max"
@@ -237,17 +269,33 @@ export default function MyListingsPage() {
                 ···
               </button>
               {actionOpen === listing.id && (
-                <div className="absolute right-0 mt-1 w-36 bg-white border border-gray-200 rounded-xl shadow-lg z-10 overflow-hidden">
-                  {["Edit listing", "View listing", "Pause listing", "Delete"].map((action) => (
-                    <button
-                      key={action}
-                      type="button"
-                      onClick={() => setActionOpen(null)}
-                      className={`w-full px-4 py-2.5 text-left text-xs font-semibold hover:bg-gray-50 transition-colors ${action === "Delete" ? "text-red-500" : "text-[#1a1f3c]"}`}
-                    >
-                      {action}
-                    </button>
-                  ))}
+                <div className="absolute right-0 mt-1 w-36 bg-white border border-gray-200 rounded-xl shadow-lg z-50 overflow-hidden">
+                  <Link
+                    href="/agent-dashboard/listings/edit/1"
+                    className="w-full block px-4 py-2.5 text-left text-xs font-semibold hover:bg-gray-50 transition-colors text-[#1a1f3c]"
+                  >
+                    Edit listing
+                  </Link>
+                  <Link
+                    href="/agent-dashboard/listings/view/1"
+                    className="w-full block px-4 py-2.5 text-left text-xs font-semibold hover:bg-gray-50 transition-colors text-[#1a1f3c]"
+                  >
+                    View listing
+                  </Link>
+                  <button
+                    type="button"
+                    onClick={() => { setConfirmModal({ type: "Pause", id: listing.id }); setActionOpen(null); }}
+                    className="w-full px-4 py-2.5 text-left text-xs font-semibold hover:bg-gray-50 transition-colors text-[#1a1f3c]"
+                  >
+                    Pause listing
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => { setConfirmModal({ type: "Delete", id: listing.id }); setActionOpen(null); }}
+                    className="w-full px-4 py-2.5 text-left text-xs font-semibold hover:bg-gray-50 transition-colors text-red-500"
+                  >
+                    Delete
+                  </button>
                 </div>
               )}
             </div>

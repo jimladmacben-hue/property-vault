@@ -1,20 +1,37 @@
 "use client";
 
-import { useState } from "react";
-
 const tabs = ["All", "Buy", "Sell", "Land", "Commercial", "Shortlet"];
 
-const activeFilters = [
-  { label: "Lagos" },
-  { label: "₦10m - ₦20m" },
-  { label: "Bedrooms" },
-  { label: "Property type" },
-  { label: "Size" },
-  { label: "Verified only", highlight: true },
-];
+interface FilterState {
+  location: string;
+  priceRange: string;
+  bedrooms: string;
+  propertyType: string;
+  size: string;
+  isVerifiedOnly: boolean;
+}
 
-export default function PropertiesFilter() {
-  const [activeTab, setActiveTab] = useState("All");
+interface PropertiesFilterProps {
+  activeTab: string;
+  setActiveTab: (tab: string) => void;
+  filters: FilterState;
+  setFilters: (filters: FilterState | ((prev: FilterState) => FilterState)) => void;
+}
+
+export default function PropertiesFilter({ activeTab, setActiveTab, filters, setFilters }: PropertiesFilterProps) {
+  
+  const toggleVerified = () => {
+    setFilters((prev: FilterState) => ({ ...prev, isVerifiedOnly: !prev.isVerifiedOnly }));
+  };
+
+  const activeFilterPills = [
+    { label: filters.location, key: "location" },
+    { label: filters.priceRange, key: "priceRange" },
+    { label: filters.bedrooms, key: "bedrooms" },
+    { label: filters.propertyType, key: "propertyType" },
+    { label: filters.size, key: "size" },
+    { label: "Verified only", key: "isVerifiedOnly", highlight: true, active: filters.isVerifiedOnly },
+  ];
 
   return (
     <div className="w-full bg-white border-b border-gray-100 px-6 md:px-10 py-4">
@@ -52,12 +69,15 @@ export default function PropertiesFilter() {
 
         {/* Row 2: Active filter pills */}
         <div className="flex items-center gap-2 flex-wrap">
-          {activeFilters.map((filter) => (
+          {activeFilterPills.map((filter) => (
             <button
-              key={filter.label}
+              key={filter.key}
+              onClick={filter.key === "isVerifiedOnly" ? toggleVerified : undefined}
               className={`px-3 py-1.5 rounded-full text-[12px] font-medium border transition-all flex items-center gap-1 ${
-                filter.highlight
+                filter.highlight && filter.active
                   ? "border-[#F5A623] text-[#F5A623] bg-amber-50"
+                  : filter.highlight
+                  ? "border-gray-200 text-gray-400 hover:border-[#F5A623] hover:text-[#F5A623]"
                   : "border-gray-200 text-gray-600 hover:border-gray-400"
               }`}
             >

@@ -2,352 +2,513 @@
 
 import { useState } from "react";
 
-// ─── Tab definitions ──────────────────────────────────────────────────────────
+type Tab = "notifications" | "privacy" | "security" | "danger";
 
-const tabs = [
-  "Profile",
-  "Notifications",
-  "Verification",
-  "Areas covered",
-  "Security",
-  "Danger zone",
+const tabs: { key: Tab; label: string; icon: React.ReactNode }[] = [
+  {
+    key: "notifications",
+    label: "Notifications",
+    icon: (
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9" />
+        <path d="M13.73 21a2 2 0 01-3.46 0" />
+      </svg>
+    ),
+  },
+  {
+    key: "privacy",
+    label: "Privacy",
+    icon: (
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+      </svg>
+    ),
+  },
+  {
+    key: "security",
+    label: "Security",
+    icon: (
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+        <path d="M7 11V7a5 5 0 0110 0v4" />
+      </svg>
+    ),
+  },
+  {
+    key: "danger",
+    label: "Danger Zone",
+    icon: (
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" />
+        <line x1="12" y1="9" x2="12" y2="13" />
+        <line x1="12" y1="17" x2="12.01" y2="17" />
+      </svg>
+    ),
+  },
 ];
 
-// ─── Reusable input ───────────────────────────────────────────────────────────
-
-function Field({
-  label, value, onChange, placeholder, disabled, hint, type = "text",
+function Toggle({
+  checked,
+  onChange,
 }: {
-  label: string; value: string; onChange?: (v: string) => void;
-  placeholder?: string; disabled?: boolean; hint?: string; type?: string;
+  checked: boolean;
+  onChange: () => void;
 }) {
   return (
-    <div className="flex flex-col gap-1.5">
-      <label className="text-xs font-semibold text-gray-500">{label}</label>
-      <input
-        type={type}
-        value={value}
-        onChange={(e) => onChange?.(e.target.value)}
-        placeholder={placeholder}
-        disabled={disabled}
-        className={`w-full px-4 py-3 border rounded-xl text-sm font-medium transition-all
-          ${disabled
-            ? "bg-gray-50 border-gray-100 text-gray-400 cursor-not-allowed"
-            : "bg-white border-gray-200 text-[#1a1f3c] focus:outline-none focus:border-[#F5A623] focus:ring-2 focus:ring-[#F5A623]/20"
-          }`}
+    <button
+      onClick={onChange}
+      className="relative inline-flex h-6 w-11 items-center rounded-full transition-colors"
+      style={{ background: checked ? "#1a1f3c" : "#d1d5db" }}
+    >
+      <span
+        className="inline-block h-4 w-4 transform rounded-full bg-white transition-transform shadow"
+        style={{ transform: checked ? "translateX(22px)" : "translateX(2px)" }}
       />
-      {hint && <p className="text-xs text-gray-400">{hint}</p>}
+    </button>
+  );
+}
+
+function SettingRow({
+  label,
+  description,
+  children,
+}: {
+  label: string;
+  description?: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <div className="flex items-center justify-between py-4" style={{ borderBottom: "1px solid #f3f4f6" }}>
+      <div className="flex-1 mr-6">
+        <p className="text-sm font-semibold" style={{ color: "#1a1f3c" }}>{label}</p>
+        {description && (
+          <p className="text-xs mt-0.5" style={{ color: "#9ca3af" }}>{description}</p>
+        )}
+      </div>
+      {children}
     </div>
   );
 }
 
-// ─── Profile tab ──────────────────────────────────────────────────────────────
+export default function BuyerSettingsPage() {
+  const [activeTab, setActiveTab] = useState<Tab>("notifications");
 
-function ProfileTab() {
-  const [form, setForm] = useState({
-    firstName: "Adewale",
-    lastName: "Okonkwo",
-    phone: "08012345678",
-    whatsapp: "08012345678",
-    agency: "Lagos Prime Realty",
-    bio: "Senior property consultant with 6+ years specialising in Lekki, Victoria Island, and Ikoyi. All listings personally inspected and title documents verified before listing.",
-    email: "adewale@lagosprime.ng",
-    experience: "6 years",
+  const [notifSettings, setNotifSettings] = useState({
+    newListingAlerts: true,
+    priceDropAlerts: true,
+    agentReplies: true,
+    viewingReminders: true,
+    marketUpdates: false,
+    promotionalEmails: false,
+    smsNotifications: true,
+    pushNotifications: false,
   });
 
-  const [expOpen, setExpOpen] = useState(false);
-  const expOptions = ["1 year", "2 years", "3 years", "4 years", "5 years", "6 years", "7 years", "8 years", "9 years", "10+ years"];
-
-  const update = (field: string, value: string) => setForm((p) => ({ ...p, [field]: value }));
-
-  return (
-    <div className="bg-white rounded-2xl border border-gray-100 overflow-hidden">
-      {/* Header */}
-      <div className="px-6 py-5 border-b border-gray-100">
-        <h2 className="text-base font-black text-[#1a1f3c] mb-0.5">Profile Information</h2>
-        <p className="text-xs text-gray-400">This is what buyers see on your profile</p>
-      </div>
-
-      <div className="px-6 py-6 space-y-6">
-        {/* Avatar + name */}
-        <div className="flex items-center gap-4">
-          <div className="relative flex-shrink-0">
-            <div className="w-16 h-16 rounded-full overflow-hidden bg-gray-200">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src="/images/agent-adewale.jpg" alt="Agent" className="w-full h-full object-cover" />
-            </div>
-            <button className="absolute -bottom-0.5 -right-0.5 w-6 h-6 bg-[#1a1f3c] rounded-full flex items-center justify-center border-2 border-white">
-              <svg width="10" height="10" viewBox="0 0 24 24" fill="none">
-                <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                <path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
-            </button>
-          </div>
-          <div>
-            <p className="text-base font-black text-[#1a1f3c]">{form.firstName} {form.lastName}</p>
-            <p className="text-xs text-gray-400 mb-2">{form.email}</p>
-            <div className="flex items-center gap-2">
-              <span className="flex items-center gap-1 text-[10px] font-bold text-green-600 bg-green-50 border border-green-200 px-2 py-0.5 rounded-full">
-                <svg width="8" height="8" viewBox="0 0 8 8" fill="none">
-                  <path d="M1 4l2 2 4-4" stroke="#16a34a" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                </svg>
-                Verified agent
-              </span>
-              <span className="text-[10px] font-bold text-gray-500 bg-gray-100 border border-gray-200 px-2 py-0.5 rounded-full">
-                NIN verified
-              </span>
-            </div>
-          </div>
-        </div>
-
-        {/* Form fields */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <Field label="First Name" value={form.firstName} onChange={(v) => update("firstName", v)} />
-          <Field label="Last Name" value={form.lastName} onChange={(v) => update("lastName", v)} />
-        </div>
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <Field label="Phone Number" value={form.phone} onChange={(v) => update("phone", v)} type="tel" />
-          <Field
-            label="Whatsapp Number" value={form.whatsapp}
-            onChange={(v) => update("whatsapp", v)} type="tel"
-            hint="Buyers use this to contact you directly"
-          />
-        </div>
-
-        <Field label="Agency / Company Name" value={form.agency} onChange={(v) => update("agency", v)} />
-
-        {/* Bio */}
-        <div className="flex flex-col gap-1.5">
-          <label className="text-xs font-semibold text-gray-500">Bio</label>
-          <textarea
-            value={form.bio}
-            onChange={(e) => update("bio", e.target.value)}
-            rows={3}
-            className="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm font-medium text-[#1a1f3c] focus:outline-none focus:border-[#F5A623] focus:ring-2 focus:ring-[#F5A623]/20 transition-all resize-none"
-          />
-        </div>
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <Field
-            label="Email Address" value={form.email} disabled
-            hint="Contact support to change email"
-          />
-          {/* Experience dropdown */}
-          <div className="flex flex-col gap-1.5">
-            <label className="text-xs font-semibold text-gray-500">Years of Experience</label>
-            <div className="relative">
-              <button
-                type="button"
-                onClick={() => setExpOpen((o) => !o)}
-                className="w-full flex items-center justify-between px-4 py-3 border border-gray-200 rounded-xl text-sm font-medium text-[#1a1f3c] bg-white focus:outline-none hover:border-gray-300 transition-all"
-              >
-                {form.experience}
-                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" className={`transition-transform ${expOpen ? "rotate-180" : ""}`}>
-                  <path d="M4 6l4 4 4-4" stroke="#9ca3af" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                </svg>
-              </button>
-              {expOpen && (
-                <div className="absolute top-full left-0 mt-1 w-full bg-white border border-gray-200 rounded-xl shadow-lg z-10 overflow-hidden max-h-48 overflow-y-auto">
-                  {expOptions.map((opt) => (
-                    <button
-                      key={opt}
-                      type="button"
-                      onClick={() => { update("experience", opt); setExpOpen(false); }}
-                      className={`w-full px-4 py-2.5 text-left text-sm font-medium hover:bg-amber-50 transition-colors ${form.experience === opt ? "text-[#F5A623]" : "text-[#1a1f3c]"}`}
-                    >
-                      {opt}
-                    </button>
-                  ))}
-                </div>
-              )}
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Footer */}
-      <div className="px-6 py-4 border-t border-gray-100 flex items-center justify-between">
-        <p className="text-xs text-gray-400">Changes are visible to buyers immediately</p>
-        <button className="bg-[#1a1f3c] hover:bg-[#2a3060] text-white text-sm font-bold px-6 py-2.5 rounded-xl transition-colors shadow-md">
-          Save Changes
-        </button>
-      </div>
-    </div>
-  );
-}
-
-// ─── Notifications tab ────────────────────────────────────────────────────────
-
-const notifSettings = [
-  { label: "New enquiry received", sub: "Get notified when a buyer sends you a message", key: "newEnquiry" },
-  { label: "Listing approved", sub: "When Property Vault approves your listing", key: "listingApproved" },
-  { label: "Review received", sub: "When a buyer leaves you a review", key: "reviewReceived" },
-  { label: "Viewing scheduled", sub: "When a buyer confirms a viewing", key: "viewingScheduled" },
-  { label: "Weekly performance report", sub: "A weekly summary of your listing performance", key: "weeklyReport" },
-];
-
-function NotificationsTab() {
-  const [settings, setSettings] = useState<Record<string, boolean>>({
-    newEnquiry: true, listingApproved: true, reviewReceived: true,
-    viewingScheduled: false, weeklyReport: true,
+  const [privacySettings, setPrivacySettings] = useState({
+    showProfileToAgents: true,
+    showContactToAgents: false,
+    allowDataForRecommendations: true,
+    allowAnonymousAnalytics: true,
   });
 
-  return (
-    <div className="bg-white rounded-2xl border border-gray-100 overflow-hidden">
-      <div className="px-6 py-5 border-b border-gray-100">
-        <h2 className="text-base font-black text-[#1a1f3c] mb-0.5">Notification Preferences</h2>
-        <p className="text-xs text-gray-400">Choose what you want to be notified about</p>
-      </div>
-      <div className="divide-y divide-gray-50">
-        {notifSettings.map((n) => (
-          <div key={n.key} className="flex items-center justify-between px-6 py-4">
-            <div>
-              <p className="text-sm font-bold text-[#1a1f3c]">{n.label}</p>
-              <p className="text-xs text-gray-400 mt-0.5">{n.sub}</p>
-            </div>
-            <button
-              type="button"
-              onClick={() => setSettings((p) => ({ ...p, [n.key]: !p[n.key] }))}
-              className={`relative w-11 h-6 rounded-full transition-colors duration-200 flex-shrink-0 ${settings[n.key] ? "bg-[#1a1f3c]" : "bg-gray-200"}`}
-            >
-              <span className={`absolute top-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform duration-200 ${settings[n.key] ? "translate-x-5" : "translate-x-0.5"}`} />
-            </button>
-          </div>
-        ))}
-      </div>
-      <div className="px-6 py-4 border-t border-gray-100 flex justify-end">
-        <button className="bg-[#1a1f3c] hover:bg-[#2a3060] text-white text-sm font-bold px-6 py-2.5 rounded-xl transition-colors shadow-md">
-          Save Preferences
-        </button>
-      </div>
-    </div>
-  );
-}
+  const [passwords, setPasswords] = useState({
+    current: "",
+    next: "",
+    confirm: "",
+  });
+  const [pwSaved, setPwSaved] = useState(false);
+  const [pwError, setPwError] = useState("");
 
-// ─── Security tab ─────────────────────────────────────────────────────────────
+  const [showDeactivate, setShowDeactivate] = useState(false);
+  const [showDelete, setShowDelete] = useState(false);
 
-function SecurityTab() {
+  const toggleNotif = (key: keyof typeof notifSettings) =>
+    setNotifSettings((s) => ({ ...s, [key]: !s[key] }));
+
+  const togglePrivacy = (key: keyof typeof privacySettings) =>
+    setPrivacySettings((s) => ({ ...s, [key]: !s[key] }));
+
+  const handlePasswordSave = () => {
+    setPwError("");
+    if (!passwords.current) return setPwError("Enter your current password.");
+    if (passwords.next.length < 8) return setPwError("New password must be at least 8 characters.");
+    if (passwords.next !== passwords.confirm) return setPwError("Passwords do not match.");
+    setPwSaved(true);
+    setPasswords({ current: "", next: "", confirm: "" });
+  };
+
   return (
-    <div className="bg-white rounded-2xl border border-gray-100 overflow-hidden">
-      <div className="px-6 py-5 border-b border-gray-100">
-        <h2 className="text-base font-black text-[#1a1f3c] mb-0.5">Security</h2>
-        <p className="text-xs text-gray-400">Manage your password and account security</p>
-      </div>
-      <div className="px-6 py-6 space-y-4">
-        <Field label="Current Password" value="" placeholder="••••••••" type="password" onChange={() => {}} />
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <Field label="New Password" value="" placeholder="••••••••" type="password" onChange={() => {}} />
-          <Field label="Confirm New Password" value="" placeholder="••••••••" type="password" onChange={() => {}} />
+    <div className="min-h-full" style={{ background: "#f5f5f0" }}>
+      <div className="px-8 pt-8 pb-12 max-w-3xl">
+        {/* Header */}
+        <div className="mb-8">
+          <h1
+            className="text-2xl font-bold mb-1"
+            style={{ color: "#1a1f3c", fontFamily: "'Nunito Sans', sans-serif" }}
+          >
+            Settings
+          </h1>
+          <p className="text-sm" style={{ color: "#6b7280" }}>
+            Manage your account preferences and privacy
+          </p>
         </div>
-      </div>
-      <div className="px-6 py-4 border-t border-gray-100 flex justify-end">
-        <button className="bg-[#1a1f3c] hover:bg-[#2a3060] text-white text-sm font-bold px-6 py-2.5 rounded-xl transition-colors shadow-md">
-          Update Password
-        </button>
-      </div>
-    </div>
-  );
-}
 
-// ─── Danger Zone tab ──────────────────────────────────────────────────────────
-
-function DangerZoneTab() {
-  return (
-    <div className="bg-white rounded-2xl border border-red-100 overflow-hidden">
-      <div className="px-6 py-5 border-b border-red-100">
-        <h2 className="text-base font-black text-red-600 mb-0.5">Danger Zone</h2>
-        <p className="text-xs text-gray-400">Irreversible actions — proceed with caution</p>
-      </div>
-      <div className="px-6 py-6 space-y-4">
-        <div className="flex items-center justify-between p-4 border border-red-100 rounded-xl">
-          <div>
-            <p className="text-sm font-bold text-[#1a1f3c]">Deactivate account</p>
-            <p className="text-xs text-gray-400 mt-0.5">Your listings will be hidden but your data is preserved</p>
-          </div>
-          <button className="text-sm font-bold border-2 border-red-200 text-red-500 px-4 py-2 rounded-xl hover:bg-red-50 transition-colors flex-shrink-0">
-            Deactivate
-          </button>
-        </div>
-        <div className="flex items-center justify-between p-4 border border-red-100 rounded-xl">
-          <div>
-            <p className="text-sm font-bold text-[#1a1f3c]">Delete account</p>
-            <p className="text-xs text-gray-400 mt-0.5">Permanently deletes your account and all associated data</p>
-          </div>
-          <button className="text-sm font-bold bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-xl transition-colors flex-shrink-0">
-            Delete account
-          </button>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-// ─── Placeholder tabs ─────────────────────────────────────────────────────────
-
-function PlaceholderTab({ title }: { title: string }) {
-  return (
-    <div className="bg-white rounded-2xl border border-gray-100 p-8 text-center">
-      <p className="text-base font-black text-[#1a1f3c] mb-2">{title}</p>
-      <p className="text-sm text-gray-400">This section is coming soon.</p>
-    </div>
-  );
-}
-
-// ─── Main Page ────────────────────────────────────────────────────────────────
-
-export default function SettingsPage() {
-  const [activeTab, setActiveTab] = useState("Profile");
-
-  return (
-    <div className="p-6 sm:p-8">
-
-      {/* ── Top bar ── */}
-      <div className="flex items-start justify-between mb-6">
-        <div>
-          <h1 className="text-2xl font-black text-[#1a1f3c]">Settings</h1>
-          <p className="text-sm text-gray-400 mt-0.5">Manage your profile, notifications, and account</p>
-        </div>
-        <button className="relative w-10 h-10 rounded-full border border-gray-200 bg-white flex items-center justify-center hover:border-gray-300 transition-colors">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-            <path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 01-3.46 0" stroke="#1a1f3c" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-          </svg>
-          <span className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 text-white text-[9px] font-black rounded-full flex items-center justify-center">3</span>
-        </button>
-      </div>
-
-      {/* ── Two-column layout ── */}
-      <div className="flex flex-col sm:flex-row gap-6 items-start">
-
-        {/* Left — tab list */}
-        <div className="w-full sm:w-52 flex-shrink-0 bg-white rounded-2xl border border-gray-100 overflow-hidden">
+        {/* Tab nav */}
+        <div className="flex gap-1 mb-6 p-1 rounded-xl" style={{ background: "#fff", border: "1px solid #e5e7eb" }}>
           {tabs.map((tab) => (
             <button
-              key={tab}
-              type="button"
-              onClick={() => setActiveTab(tab)}
-              className={`w-full text-left px-5 py-3.5 text-sm font-semibold border-b border-gray-50 last:border-0 transition-colors
-                ${activeTab === tab
-                  ? "text-[#1a1f3c] font-black bg-gray-50"
-                  : tab === "Danger zone"
-                  ? "text-red-400 hover:bg-red-50"
-                  : "text-gray-500 hover:text-[#1a1f3c] hover:bg-gray-50"
-                }`}
+              key={tab.key}
+              onClick={() => setActiveTab(tab.key)}
+              className="flex-1 flex items-center justify-center gap-2 py-2 rounded-lg text-sm font-semibold transition-all"
+              style={
+                activeTab === tab.key
+                  ? { background: "#1a1f3c", color: "#fff" }
+                  : { color: "#6b7280" }
+              }
             >
-              {tab}
+              {tab.icon}
+              <span className="hidden sm:inline">{tab.label}</span>
             </button>
           ))}
         </div>
 
-        {/* Right — tab content */}
-        <div className="flex-1 min-w-0">
-          {activeTab === "Profile" && <ProfileTab />}
-          {activeTab === "Notifications" && <NotificationsTab />}
-          {activeTab === "Verification" && <PlaceholderTab title="Verification" />}
-          {activeTab === "Areas covered" && <PlaceholderTab title="Areas Covered" />}
-          {activeTab === "Security" && <SecurityTab />}
-          {activeTab === "Danger zone" && <DangerZoneTab />}
-        </div>
+        {/* Notifications */}
+        {activeTab === "notifications" && (
+          <Card title="Notification Preferences">
+            <SettingRow
+              label="New listing alerts"
+              description="Get notified when new properties matching your alerts are listed"
+            >
+              <Toggle checked={notifSettings.newListingAlerts} onChange={() => toggleNotif("newListingAlerts")} />
+            </SettingRow>
+            <SettingRow
+              label="Price drop alerts"
+              description="Know when prices drop on your saved properties"
+            >
+              <Toggle checked={notifSettings.priceDropAlerts} onChange={() => toggleNotif("priceDropAlerts")} />
+            </SettingRow>
+            <SettingRow
+              label="Agent replies"
+              description="Receive notifications when an agent responds to your enquiry"
+            >
+              <Toggle checked={notifSettings.agentReplies} onChange={() => toggleNotif("agentReplies")} />
+            </SettingRow>
+            <SettingRow
+              label="Viewing reminders"
+              description="Reminders 24hrs and 1hr before a scheduled viewing"
+            >
+              <Toggle checked={notifSettings.viewingReminders} onChange={() => toggleNotif("viewingReminders")} />
+            </SettingRow>
+            <SettingRow
+              label="Market updates"
+              description="Weekly digest of Lagos real estate market trends"
+            >
+              <Toggle checked={notifSettings.marketUpdates} onChange={() => toggleNotif("marketUpdates")} />
+            </SettingRow>
+            <SettingRow
+              label="Promotional emails"
+              description="Offers, features, and Property Vault news"
+            >
+              <Toggle checked={notifSettings.promotionalEmails} onChange={() => toggleNotif("promotionalEmails")} />
+            </SettingRow>
+            <SettingRow
+              label="SMS notifications"
+              description="Text message alerts for urgent updates"
+            >
+              <Toggle checked={notifSettings.smsNotifications} onChange={() => toggleNotif("smsNotifications")} />
+            </SettingRow>
+            <SettingRow
+              label="Push notifications"
+              description="Browser push notifications while using Property Vault"
+            >
+              <Toggle checked={notifSettings.pushNotifications} onChange={() => toggleNotif("pushNotifications")} />
+            </SettingRow>
+            <div className="pt-4">
+              <button
+                className="px-6 py-2.5 rounded-full text-white text-sm font-bold"
+                style={{ background: "#1a1f3c" }}
+              >
+                Save Preferences
+              </button>
+            </div>
+          </Card>
+        )}
+
+        {/* Privacy */}
+        {activeTab === "privacy" && (
+          <Card title="Privacy & Visibility">
+            <SettingRow
+              label="Show profile to agents"
+              description="Agents can see your name and preferences when you enquire"
+            >
+              <Toggle checked={privacySettings.showProfileToAgents} onChange={() => togglePrivacy("showProfileToAgents")} />
+            </SettingRow>
+            <SettingRow
+              label="Share contact with agents"
+              description="Allow agents to see your phone number from your profile"
+            >
+              <Toggle checked={privacySettings.showContactToAgents} onChange={() => togglePrivacy("showContactToAgents")} />
+            </SettingRow>
+            <SettingRow
+              label="Personalised recommendations"
+              description="Allow us to use your search history to improve property suggestions"
+            >
+              <Toggle checked={privacySettings.allowDataForRecommendations} onChange={() => togglePrivacy("allowDataForRecommendations")} />
+            </SettingRow>
+            <SettingRow
+              label="Anonymous usage analytics"
+              description="Help us improve Property Vault with anonymous usage data"
+            >
+              <Toggle checked={privacySettings.allowAnonymousAnalytics} onChange={() => togglePrivacy("allowAnonymousAnalytics")} />
+            </SettingRow>
+            <div className="pt-4">
+              <button
+                className="px-6 py-2.5 rounded-full text-white text-sm font-bold"
+                style={{ background: "#1a1f3c" }}
+              >
+                Save Privacy Settings
+              </button>
+            </div>
+          </Card>
+        )}
+
+        {/* Security */}
+        {activeTab === "security" && (
+          <Card title="Security">
+            <div className="mb-6">
+              <h3 className="text-sm font-bold mb-4" style={{ color: "#1a1f3c" }}>
+                Change Password
+              </h3>
+              <div className="flex flex-col gap-3">
+                <PasswordField
+                  label="Current Password"
+                  value={passwords.current}
+                  onChange={(v) => { setPasswords((p) => ({ ...p, current: v })); setPwSaved(false); }}
+                />
+                <PasswordField
+                  label="New Password"
+                  value={passwords.next}
+                  onChange={(v) => { setPasswords((p) => ({ ...p, next: v })); setPwSaved(false); }}
+                />
+                <PasswordField
+                  label="Confirm New Password"
+                  value={passwords.confirm}
+                  onChange={(v) => { setPasswords((p) => ({ ...p, confirm: v })); setPwSaved(false); }}
+                />
+              </div>
+              {pwError && (
+                <p className="text-xs mt-2 font-semibold" style={{ color: "#dc2626" }}>{pwError}</p>
+              )}
+              {pwSaved && (
+                <p className="text-xs mt-2 font-semibold" style={{ color: "#065f46" }}>✓ Password updated successfully</p>
+              )}
+              <button
+                onClick={handlePasswordSave}
+                className="mt-4 px-6 py-2.5 rounded-full text-white text-sm font-bold"
+                style={{ background: "#1a1f3c" }}
+              >
+                Update Password
+              </button>
+            </div>
+
+            <div style={{ borderTop: "1px solid #f3f4f6", paddingTop: "24px" }}>
+              <h3 className="text-sm font-bold mb-1" style={{ color: "#1a1f3c" }}>
+                Active Sessions
+              </h3>
+              <p className="text-xs mb-4" style={{ color: "#6b7280" }}>
+                Devices currently signed into your account
+              </p>
+              {[
+                { device: "Chrome on MacOS", location: "Lagos, Nigeria", current: true, time: "Active now" },
+                { device: "Safari on iPhone", location: "Lagos, Nigeria", current: false, time: "2 days ago" },
+              ].map((session, i) => (
+                <div
+                  key={i}
+                  className="flex items-center justify-between py-3"
+                  style={{ borderBottom: i < 1 ? "1px solid #f3f4f6" : "none" }}
+                >
+                  <div>
+                    <p className="text-sm font-semibold" style={{ color: "#1a1f3c" }}>
+                      {session.device}
+                      {session.current && (
+                        <span
+                          className="ml-2 text-xs px-2 py-0.5 rounded-full font-semibold"
+                          style={{ background: "#d1fae5", color: "#065f46" }}
+                        >
+                          This device
+                        </span>
+                      )}
+                    </p>
+                    <p className="text-xs" style={{ color: "#9ca3af" }}>
+                      {session.location} · {session.time}
+                    </p>
+                  </div>
+                  {!session.current && (
+                    <button
+                      className="text-xs font-semibold"
+                      style={{ color: "#dc2626" }}
+                    >
+                      Sign out
+                    </button>
+                  )}
+                </div>
+              ))}
+            </div>
+          </Card>
+        )}
+
+        {/* Danger Zone */}
+        {activeTab === "danger" && (
+          <Card title="Danger Zone">
+            <div
+              className="rounded-xl p-5 mb-4"
+              style={{ background: "#fef2f2", border: "1px solid #fecaca" }}
+            >
+              <div className="flex items-start justify-between gap-4">
+                <div>
+                  <p className="text-sm font-bold" style={{ color: "#991b1b" }}>
+                    Deactivate Account
+                  </p>
+                  <p className="text-xs mt-1" style={{ color: "#b91c1c" }}>
+                    Temporarily disable your account. You can reactivate it any time by logging in.
+                  </p>
+                </div>
+                <button
+                  onClick={() => setShowDeactivate(!showDeactivate)}
+                  className="flex-shrink-0 px-4 py-2 rounded-full text-sm font-bold"
+                  style={{
+                    background: showDeactivate ? "#991b1b" : "#fff",
+                    color: showDeactivate ? "#fff" : "#991b1b",
+                    border: "1px solid #fca5a5",
+                  }}
+                >
+                  {showDeactivate ? "Confirm Deactivation" : "Deactivate"}
+                </button>
+              </div>
+              {showDeactivate && (
+                <p className="text-xs mt-3 font-semibold" style={{ color: "#991b1b" }}>
+                  Are you sure? Click "Confirm Deactivation" to proceed, or click away to cancel.
+                </p>
+              )}
+            </div>
+
+            <div
+              className="rounded-xl p-5"
+              style={{ background: "#fef2f2", border: "1px solid #fecaca" }}
+            >
+              <div className="flex items-start justify-between gap-4">
+                <div>
+                  <p className="text-sm font-bold" style={{ color: "#991b1b" }}>
+                    Delete Account
+                  </p>
+                  <p className="text-xs mt-1" style={{ color: "#b91c1c" }}>
+                    Permanently delete your account and all associated data. This action cannot be undone.
+                  </p>
+                </div>
+                <button
+                  onClick={() => setShowDelete(!showDelete)}
+                  className="flex-shrink-0 px-4 py-2 rounded-full text-sm font-bold text-white"
+                  style={{ background: "#dc2626" }}
+                >
+                  Delete Account
+                </button>
+              </div>
+              {showDelete && (
+                <div className="mt-4">
+                  <p className="text-xs font-bold mb-2" style={{ color: "#991b1b" }}>
+                    Type DELETE to confirm:
+                  </p>
+                  <input
+                    type="text"
+                    placeholder="DELETE"
+                    className="w-full px-3 py-2 text-sm rounded-lg"
+                    style={{
+                      border: "1px solid #fca5a5",
+                      background: "#fff",
+                      color: "#1a1f3c",
+                      fontFamily: "'Nunito Sans', sans-serif",
+                      outline: "none",
+                    }}
+                  />
+                  <p className="text-xs mt-2" style={{ color: "#9ca3af" }}>
+                    All your saved properties, enquiries, and search alerts will be permanently removed.
+                  </p>
+                </div>
+              )}
+            </div>
+          </Card>
+        )}
+      </div>
+    </div>
+  );
+}
+
+function Card({ title, children }: { title: string; children: React.ReactNode }) {
+  return (
+    <div
+      className="rounded-2xl p-6"
+      style={{ background: "#fff", border: "1px solid #e5e7eb" }}
+    >
+      <h2
+        className="text-base font-bold mb-4"
+        style={{ color: "#1a1f3c", fontFamily: "'Nunito Sans', sans-serif" }}
+      >
+        {title}
+      </h2>
+      {children}
+    </div>
+  );
+}
+
+function PasswordField({
+  label,
+  value,
+  onChange,
+}: {
+  label: string;
+  value: string;
+  onChange: (v: string) => void;
+}) {
+  const [show, setShow] = useState(false);
+  return (
+    <div>
+      <label
+        className="block text-xs font-bold mb-1"
+        style={{ color: "#6b7280", textTransform: "uppercase", letterSpacing: "0.05em" }}
+      >
+        {label}
+      </label>
+      <div className="relative">
+        <input
+          type={show ? "text" : "password"}
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+          className="w-full px-4 py-2.5 text-sm rounded-xl pr-10"
+          style={{
+            border: "1px solid #e5e7eb",
+            background: "#f9fafb",
+            color: "#1a1f3c",
+            fontFamily: "'Nunito Sans', sans-serif",
+            outline: "none",
+          }}
+        />
+        <button
+          onClick={() => setShow(!show)}
+          className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400"
+          tabIndex={-1}
+        >
+          {show ? (
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19" />
+              <line x1="1" y1="1" x2="23" y2="23" />
+            </svg>
+          ) : (
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+              <circle cx="12" cy="12" r="3" />
+            </svg>
+          )}
+        </button>
       </div>
     </div>
   );

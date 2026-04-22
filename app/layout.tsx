@@ -1,12 +1,8 @@
-// app/layout.tsx
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
-import Navbar from "@/components/layout/Navbar";
-import Footer from "@/components/layout/Footer";
 import "@/app/globals.css";
-
-
 import { Nunito_Sans } from "next/font/google";
+import LayoutWrapper from "@/components/layout/LayoutWrapper";
 
 const nunitoSans = Nunito_Sans({
   subsets: ["latin"],
@@ -40,9 +36,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={nunitoSans.variable}>
-        <Navbar />
-        <main>{children}</main>
-        <Footer />
+        <LayoutWrapper>{children}</LayoutWrapper>
       </body>
     </html>
   );
