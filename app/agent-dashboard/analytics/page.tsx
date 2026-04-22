@@ -64,7 +64,7 @@ export default function AnalyticsPage() {
             <span className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 text-white text-[9px] font-black rounded-full flex items-center justify-center">3</span>
           </button>
           <Link
-            href="/dashboard/listings/new"
+            href="/agent-dashboard/listings/new"
             className="flex items-center gap-2 bg-[#1a1f3c] hover:bg-[#2a3060] text-white text-sm font-bold px-5 py-2.5 rounded-full transition-colors shadow-md"
           >
             <span className="text-base leading-none">+</span> New listing

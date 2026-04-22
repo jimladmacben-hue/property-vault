@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import dynamic from "next/dynamic";
+import EnquiryForm from "./EnquiryForm";
 
 const PropertyDetailMap = dynamic(() => import("./PropertyDetailMap"), {
   ssr: false,
@@ -31,6 +32,31 @@ const safetyTips = [
 
 export default function PropertyDetail({ id }: { id: string }) {
   const [expanded, setExpanded] = useState(false);
+  const [isEnquiryModalOpen, setIsEnquiryModalOpen] = useState(false);
+  const [isSaved, setIsSaved] = useState(false);
+
+  const handleShare = async () => {
+    const shareData = {
+      title: "7 Bedroom Detached Duplex",
+      text: "Check out this property in Lekki Phase 11, Lagos",
+      url: window.location.href,
+    };
+
+    try {
+      if (navigator.share) {
+        await navigator.share(shareData);
+      } else {
+        await navigator.clipboard.writeText(window.location.href);
+        alert("Link copied to clipboard!");
+      }
+    } catch (err) {
+      console.error("Error sharing:", err);
+    }
+  };
+
+  const handleSave = () => {
+    setIsSaved(!isSaved);
+  };
 
   return (
     <div className="w-full bg-[#f5f5f0] min-h-screen" style={{ paddingTop: "80px" }}>
@@ -85,17 +111,23 @@ export default function PropertyDetail({ id }: { id: string }) {
           </div>
           {/* Share + Save */}
           <div className="flex items-center gap-2 flex-shrink-0 mt-1">
-            <button className="flex items-center gap-1.5 border border-gray-300 text-[#1a1f3c] text-[13px] font-medium px-4 py-2 rounded-full hover:bg-gray-100 transition-colors">
+            <button
+              onClick={handleShare}
+              className="flex items-center gap-1.5 border border-gray-300 text-[#1a1f3c] text-[13px] font-medium px-4 py-2 rounded-full hover:bg-gray-100 transition-colors"
+            >
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
                 <path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8M16 6l-4-4-4 4M12 2v13" stroke="#1a1f3c" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
               Share
             </button>
-            <button className="flex items-center gap-1.5 border border-gray-300 text-[#1a1f3c] text-[13px] font-medium px-4 py-2 rounded-full hover:bg-gray-100 transition-colors">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
-                <path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z" stroke="#1a1f3c" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+            <button
+              onClick={handleSave}
+              className={`flex items-center gap-1.5 border ${isSaved ? "border-[#F5A623] bg-amber-50" : "border-gray-300"} text-[#1a1f3c] text-[13px] font-medium px-4 py-2 rounded-full hover:bg-gray-100 transition-colors`}
+            >
+              <svg width="14" height="14" viewBox="0 0 24 24" fill={isSaved ? "#F5A623" : "none"}>
+                <path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z" stroke={isSaved ? "#F5A623" : "#1a1f3c"} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
-              Save
+              {isSaved ? "Saved" : "Save"}
             </button>
           </div>
         </div>
@@ -113,10 +145,12 @@ export default function PropertyDetail({ id }: { id: string }) {
             <div className="absolute top-4 left-4 bg-[#1a1f3c]/80 backdrop-blur-sm text-white text-[13px] font-bold px-3 py-1.5 rounded-full">
               ₦90,000,000 /yr
             </div>
-            {/* Heart */}
-            <button className="absolute top-4 right-4 w-8 h-8 bg-white rounded-full flex items-center justify-center shadow">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
-                <path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z" stroke="#1a1f3c" strokeWidth="1.5" fill="none" />
+            <button
+              onClick={handleSave}
+              className="absolute top-4 right-4 w-8 h-8 bg-white rounded-full flex items-center justify-center shadow hover:scale-105 transition-transform"
+            >
+              <svg width="14" height="14" viewBox="0 0 24 24" fill={isSaved ? "#F5A623" : "none"}>
+                <path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z" stroke={isSaved ? "#F5A623" : "#1a1f3c"} strokeWidth="1.5" />
               </svg>
             </button>
             {/* View more photos */}
@@ -204,7 +238,10 @@ export default function PropertyDetail({ id }: { id: string }) {
             <h2 className="text-[17px] font-bold text-[#1a1f3c]">Location</h2>
             <div className="flex flex-col items-end gap-1.5">
               <span className="text-[12px] text-gray-400">Exact address shown after enquiry</span>
-              <button className="border border-gray-200 text-[#1a1f3c] text-[12px] font-semibold px-3 py-1.5 rounded-full hover:bg-gray-50 transition-colors">
+              <button
+                onClick={() => setIsEnquiryModalOpen(true)}
+                className="border border-gray-200 text-[#1a1f3c] text-[12px] font-semibold px-3 py-1.5 rounded-full hover:bg-gray-50 transition-colors"
+              >
                 Get enquiry form
               </button>
             </div>
@@ -239,73 +276,103 @@ export default function PropertyDetail({ id }: { id: string }) {
         </div>
 
         {/* Agent card + Safety tips */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mt-5 mb-8">
-          {/* Agent card */}
-          <div className="bg-white rounded-2xl shadow-sm p-5">
-            <p className="text-[13px] font-bold text-[#1a1f3c] mb-4">Want to speak to Agent?</p>
-            <div className="flex items-start gap-3 mb-4">
-              {/* Avatar */}
-              <div className="w-12 h-12 rounded-full bg-[#1a1f3c] flex items-center justify-center flex-shrink-0">
-                <span className="text-white font-bold text-sm">AO</span>
-              </div>
-              <div className="flex-1">
-                <p className="text-[13.5px] font-bold text-[#1a1f3c]">Adewale Okon</p>
-                <p className="text-[11.5px] text-gray-400">Lagos Prime Realty</p>
-                <span className="inline-flex items-center gap-1 bg-green-50 text-green-700 text-[10px] font-semibold px-2 py-0.5 rounded-full border border-green-200 mt-1">
-                  <svg width="8" height="8" viewBox="0 0 12 12" fill="none">
-                    <path d="M2.5 6L5 8.5L9.5 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                  </svg>
-                  Verified agent
-                </span>
-              </div>
-            </div>
-
-            {/* Agent stats */}
-            <div className="grid grid-cols-4 divide-x divide-gray-100 border-t border-b border-gray-100 py-3 mb-4">
-              {[
-                { value: "84", label: "listings" },
-                { value: "7yrs", label: "experience" },
-                { value: "99%", label: "response" },
-                { value: "2hrs", label: "Avg response" },
-              ].map((stat) => (
-                <div key={stat.label} className="flex flex-col items-center">
-                  <span className="text-[13px] font-bold text-[#1a1f3c]">{stat.value}</span>
-                  <span className="text-[10px] text-gray-400">{stat.label}</span>
-                </div>
-              ))}
-            </div>
-
-            {/* Stars */}
-            <div className="flex items-center gap-1.5 mb-4">
-              {[1, 2, 3, 4, 5].map((s) => (
-                <svg key={s} width="14" height="14" viewBox="0 0 24 24" fill={s <= 5 ? "#F5A623" : "#e5e7eb"}>
-                  <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
-                </svg>
-              ))}
-              <span className="text-[12px] font-bold text-[#1a1f3c]">5.0</span>
-              <span className="text-[11px] text-gray-400">(180 reviews)</span>
-            </div>
-
-            <button className="w-full bg-[#1a1f3c] text-white text-[13px] font-semibold py-3 rounded-full hover:bg-[#2d3561] transition-colors">
-              View agent profile
-            </button>
+        <div className="flex flex-col gap-8 mt-8 mb-12">
+          {/* Agent section title */}
+          <div>
+            <h2 className="text-[22px] font-bold text-[#1a1f3c]">Want to speak to Agent?</h2>
           </div>
 
-          {/* Safety tips */}
-          <div className="bg-white rounded-2xl shadow-sm p-5">
-            <h3 className="text-[15px] font-bold text-[#1a1f3c] mb-4">Safety Tips</h3>
-            <ul className="flex flex-col gap-3">
-              {safetyTips.map((tip) => (
-                <li key={tip} className="flex items-start gap-2.5">
-                  <span className="w-2 h-2 rounded-full bg-[#F5A623] flex-shrink-0 mt-1.5" />
-                  <span className="text-[13px] text-gray-600 leading-relaxed">{tip}</span>
-                </li>
-              ))}
-            </ul>
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            {/* Agent card */}
+            <div className="lg:col-span-2 bg-white rounded-xl border border-gray-200 overflow-hidden flex flex-col md:flex-row">
+              {/* Left Column: Agent Info */}
+              <div className="flex-[1.5] p-8 flex flex-row items-center gap-2 justify-start border-b md:border-b-0 md:border-r border-gray-200">
+                <div className="relative">
+                  <div className="w-24 h-24 rounded-full border border-gray-100 flex items-center justify-center bg-[#050b2c] text-white text-4xl font-bold shadow-lg">
+                    AO
+                  </div>
+                  <div className="absolute bottom-1 right-2 w-8 h-8 bg-green-500 rounded-full border-4 border-white flex items-center justify-center">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                      <path d="M20 6L9 17L4 12" stroke="white" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
+                    </svg>
+                  </div>
+                </div>
+                <div className="flex flex-col items-start text-left">
+                  <h5 className="text-[18px] font-bold text-[#1a1f3c] mb-1">Adewale Okon</h5>
+                  <p className="text-[#9d9d9d] text-[14px] mb-4">Lagos Prime Realty</p>
+                  <div className="bg-[#e8f5ed] text-[#2e7d32] text-[12px] font-bold px-4 py-2 rounded-lg border border-[#c8e6c9]">
+                    Verified agent
+                  </div>
+                </div>
+              </div>
+
+              {/* Right Column: Stats & Rating */}
+              <div className="flex-[1.5] p-8 flex flex-col justify-between">
+                <div>
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-8">
+                    {[
+                      { value: "84", label: "listings" },
+                      { value: "7yrs", label: "experience" },
+                      { value: "99%", label: "response" },
+                      { value: "2hrs", label: "Avg response" },
+                    ].map((stat) => (
+                      <div key={stat.label} className="bg-[#fdfbf7] border border-gray-100 rounded-lg p-4 flex flex-col items-center justify-center text-center">
+                        <span className="text-xl font-bold text-[#1a1f3c]">{stat.value}</span>
+                        <span className="text-[11px] text-gray-500 uppercase tracking-wider mt-1">{stat.label}</span>
+                      </div>
+                    ))}
+                  </div>
+
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6">
+                    <div className="flex items-center gap-4">
+                      <div className="flex items-center gap-1">
+                        {[1, 2, 3, 4, 5].map((s) => (
+                          <svg key={s} width="20" height="20" viewBox="0 0 24 24" fill="#c48e1a">
+                            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+                          </svg>
+                        ))}
+                      </div>
+                      <div className="flex items-center gap-1.5">
+                        <span className="text-lg font-bold text-[#1a1f3c]">5.0</span>
+                        <span className="text-sm text-gray-400">(180 reviews)</span>
+                      </div>
+                    </div>
+
+                    <button className="border-2 border-[#1a1f3c] text-[#1a1f3c] px-6 py-2.5 rounded-lg font-bold text-sm hover:bg-[#1a1f3c] hover:text-white transition-all whitespace-nowrap self-end sm:self-auto">
+                      View agent profile
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Safety tips */}
+            <div className="bg-white rounded-xl border border-gray-200 p-6">
+              <h3 className="text-lg font-bold text-[#1a1f3c] mb-6 flex items-center gap-2">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                  <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" stroke="#F5A623" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+                Safety Tips
+              </h3>
+              <ul className="flex flex-col gap-4">
+                {safetyTips.map((tip) => (
+                  <li key={tip} className="flex items-start gap-3">
+                    <div className="w-1.5 h-1.5 rounded-full bg-[#F5A623] mt-2 flex-shrink-0" />
+                    <span className="text-[13.5px] text-gray-600 leading-snug">{tip}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
           </div>
         </div>
 
       </div>
+
+      <EnquiryForm
+        isOpen={isEnquiryModalOpen}
+        onClose={() => setIsEnquiryModalOpen(false)}
+        agentName="Adewale Okon"
+      />
     </div>
   );
 }

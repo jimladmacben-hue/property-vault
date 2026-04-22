@@ -125,16 +125,16 @@ export default function FeaturedAgents() {
               className="bg-white rounded-2xl shadow-sm hover:shadow-md transition-shadow p-5 flex flex-col items-center text-center"
             >
               {/* Avatar */}
-              <div className="relative mb-3">
+              <Link href={`/agents/${agent.id}`} className="relative mb-3 block group">
                 <div
-                  className={`w-16 h-16 rounded-full ${agent.avatarBg} flex items-center justify-center`}
+                  className={`w-16 h-16 rounded-full ${agent.avatarBg} flex items-center justify-center transition-transform group-hover:scale-105`}
                 >
                   <span className="text-white font-bold text-lg">
                     {agent.initials}
                   </span>
                 </div>
                 {/* Verified checkmark badge */}
-                <div className="absolute bottom-0 right-0 w-5 h-5 bg-green-500 rounded-full flex items-center justify-center border-2 border-white">
+                <div className="absolute bottom-0 right-0 w-5 h-5 bg-green-500 rounded-full flex items-center justify-center border-2 border-white z-10">
                   <svg width="9" height="9" viewBox="0 0 12 12" fill="none">
                     <path
                       d="M2 6l2.5 2.5L10 3.5"
@@ -145,12 +145,14 @@ export default function FeaturedAgents() {
                     />
                   </svg>
                 </div>
-              </div>
+              </Link>
 
               {/* Name + Agency */}
-              <h3 className="text-[14px] font-bold text-[#1a1f3c] leading-tight">
-                {agent.name}
-              </h3>
+              <Link href={`/agents/${agent.id}`}>
+                <h3 className="text-[14px] font-bold text-[#1a1f3c] leading-tight hover:text-[#F5A623] transition-colors cursor-pointer">
+                  {agent.name}
+                </h3>
+              </Link>
               <p className="text-[12px] text-gray-400 mt-0.5 mb-1.5">
                 {agent.agency}
               </p>
@@ -195,12 +197,12 @@ export default function FeaturedAgents() {
 
               {/* Buttons */}
               <div className="flex items-center gap-2 w-full">
-                <a
-                  href="#"
+                <Link
+                  href={`/agents/${agent.id}`}
                   className="flex-1 text-center text-[12px] font-semibold text-[#1a1f3c] border border-[#1a1f3c] px-3 py-2 rounded-full hover:bg-[#1a1f3c] hover:text-white transition-colors"
                 >
                   View profile
-                </a>
+                </Link>
                 <a
                   href="#"
                   className="flex-1 text-center text-[12px] font-medium text-gray-500 border border-gray-200 px-3 py-2 rounded-full hover:bg-gray-50 transition-colors"
