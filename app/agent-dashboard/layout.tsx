@@ -6,14 +6,15 @@ export default function AgentDashboardLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="min-h-screen bg-gray-50 flex">
-      {/* Sidebar — fixed 256px */}
+    <div className="min-h-screen bg-gray-50 flex flex-col lg:flex-row">
+      {/* Sidebar — hidden on mobile, fixed on desktop */}
       <AgentDashboardSidebar />
 
-      {/* Main content — offset by sidebar width */}
-      <main className="flex-1 ml-64 min-h-screen overflow-y-auto pt-10 px-6">
+      {/* Main content — responsive padding/margin */}
+      <main className="flex-1 lg:ml-64 min-h-screen overflow-y-auto pt-16 lg:pt-10 px-4 sm:px-6">
         {children}
       </main>
     </div>
+
   );
 }

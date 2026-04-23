@@ -1,6 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, Suspense } from "react";
+import { useSearchParams } from "next/navigation";
+import VerificationTab from "@/components/agent-dashboard/VerificationTab";
+
 
 // ─── Tab definitions ──────────────────────────────────────────────────────────
 
@@ -296,8 +299,17 @@ function PlaceholderTab({ title }: { title: string }) {
 
 // ─── Main Page ────────────────────────────────────────────────────────────────
 
-export default function SettingsPage() {
+function SettingsContent() {
+  const searchParams = useSearchParams();
   const [activeTab, setActiveTab] = useState("Profile");
+
+  useEffect(() => {
+    const tab = searchParams.get("tab");
+    if (tab && tabs.includes(tab)) {
+      setActiveTab(tab);
+    }
+  }, [searchParams]);
+
 
   return (
     <div className="p-6 sm:p-8">
@@ -343,12 +355,26 @@ export default function SettingsPage() {
         <div className="flex-1 min-w-0">
           {activeTab === "Profile" && <ProfileTab />}
           {activeTab === "Notifications" && <NotificationsTab />}
-          {activeTab === "Verification" && <PlaceholderTab title="Verification" />}
+          {activeTab === "Verification" && <VerificationTab />}
+
           {activeTab === "Areas covered" && <PlaceholderTab title="Areas Covered" />}
           {activeTab === "Security" && <SecurityTab />}
           {activeTab === "Danger zone" && <DangerZoneTab />}
         </div>
       </div>
     </div>
+  );
+}
+
+export default function SettingsPage() {
+  return (
+    <Suspense fallback={
+      <div className="p-8 text-center text-gray-400">
+        <div className="w-8 h-8 border-4 border-[#1a1f3c]/10 border-t-[#1a1f3c] rounded-full animate-spin mx-auto mb-4" />
+        Loading settings...
+      </div>
+    }>
+      <SettingsContent />
+    </Suspense>
   );
 }

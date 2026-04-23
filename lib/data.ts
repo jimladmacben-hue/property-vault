@@ -15,6 +15,24 @@ export interface Property {
   isVerified: boolean;
 }
 
+export type VerificationStatus = "unverified" | "pending" | "verified" | "rejected";
+
+export interface Agent {
+  id: string;
+  name: string;
+  email: string;
+  companyName?: string;
+  verificationStatus: VerificationStatus;
+  role: "agent";
+  rcNumber?: string;
+  ninNumber?: string;
+  cacDocument?: string;
+  identityDocument?: string;
+  directorName?: string;
+  directorIdDocument?: string;
+}
+
+
 export const properties: Property[] = [
   {
     id: 1,
