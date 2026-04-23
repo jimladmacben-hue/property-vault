@@ -64,6 +64,13 @@ const billingHistory = [
 
 export default function SubscriptionPage() {
   const [billingOpen, setBillingOpen] = useState(false);
+  const [extendModal, setExtendModal] = useState(false);
+  const [tokenModal, setTokenModal] = useState(false);
+  const [upgradeModal, setUpgradeModal] = useState<string | null>(null);
+  const [extendDays, setExtendDays] = useState(30);
+  const [buyAmount, setBuyAmount] = useState(500);
+
+  const tokenBalance = 1250;
 
   const listingsUsed = 12;
   const listingsTotal = 30;
@@ -86,9 +93,155 @@ export default function SubscriptionPage() {
         </button>
       </div>
 
+      {/* ── Extend Modal ── */}
+      {extendModal && (
+        <div className="fixed inset-0 bg-[#1a1f3c]/40 backdrop-blur-sm z-[100] flex items-center justify-center p-4">
+          <div className="bg-white rounded-[32px] p-8 max-w-sm w-full shadow-2xl animate-in zoom-in-95 duration-200">
+            <div className="w-14 h-14 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center mb-6">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+              </svg>
+            </div>
+            <h3 className="text-xl font-black text-[#1a1f3c] mb-2">Extend Plan</h3>
+            <p className="text-sm text-gray-400 leading-relaxed mb-6">
+              Add more days to your current Professional plan to avoid interruption.
+            </p>
+            
+            <div className="mb-8">
+              <label className="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-3">Days to add</label>
+              <div className="grid grid-cols-3 gap-2">
+                {[30, 90, 365].map(d => (
+                  <button 
+                    key={d}
+                    onClick={() => setExtendDays(d)}
+                    className={`py-3 rounded-xl text-sm font-bold border transition-all ${extendDays === d ? "bg-[#1a1f3c] text-white border-[#1a1f3c]" : "bg-white text-gray-500 border-gray-100 hover:border-gray-300"}`}
+                  >
+                    {d === 365 ? "1 Year" : `${d} Days`}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <div className="flex gap-3">
+              <button
+                onClick={() => setExtendModal(false)}
+                className="flex-1 px-6 py-3 rounded-xl text-sm font-bold text-gray-500 hover:bg-gray-50 transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={() => setExtendModal(false)}
+                className="flex-1 px-6 py-3 rounded-xl text-sm font-bold text-white bg-[#1a1f3c] hover:bg-[#2a3060] shadow-lg shadow-blue-500/10 transition-all"
+              >
+                Extend Now
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ── Token Modal ── */}
+      {tokenModal && (
+        <div className="fixed inset-0 bg-[#1a1f3c]/40 backdrop-blur-sm z-[100] flex items-center justify-center p-4">
+          <div className="bg-white rounded-[32px] p-8 max-w-sm w-full shadow-2xl animate-in zoom-in-95 duration-200">
+            <div className="w-14 h-14 rounded-2xl bg-amber-50 text-[#F5A623] flex items-center justify-center mb-6">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" />
+              </svg>
+            </div>
+            <h3 className="text-xl font-black text-[#1a1f3c] mb-2">Buy Tokens</h3>
+            <p className="text-sm text-gray-400 leading-relaxed mb-6">
+              Promotion tokens allow you to boost your listings above others in search results.
+            </p>
+            
+            <div className="mb-8">
+              <label className="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-3">Select Package</label>
+              <div className="space-y-2">
+                {[
+                  { amount: 500, price: "₦5,000" },
+                  { amount: 1500, price: "₦12,000" },
+                  { amount: 5000, price: "₦35,000" },
+                ].map(p => (
+                  <button 
+                    key={p.amount}
+                    onClick={() => setBuyAmount(p.amount)}
+                    className={`w-full flex items-center justify-between px-5 py-4 rounded-xl text-sm font-bold border transition-all ${buyAmount === p.amount ? "bg-amber-50 text-amber-700 border-amber-200" : "bg-white text-[#1a1f3c] border-gray-100 hover:border-gray-300"}`}
+                  >
+                    <span>{p.amount} Tokens</span>
+                    <span className="text-xs font-black opacity-60">{p.price}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <div className="flex gap-3">
+              <button
+                onClick={() => setTokenModal(false)}
+                className="flex-1 px-6 py-3 rounded-xl text-sm font-bold text-gray-500 hover:bg-gray-50 transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={() => setTokenModal(false)}
+                className="flex-1 px-6 py-3 rounded-xl text-sm font-bold text-white bg-[#F5A623] hover:bg-[#e09510] shadow-lg shadow-amber-500/20 transition-all"
+              >
+                Buy Now
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ── Upgrade Modal ── */}
+      {upgradeModal && (
+        <div className="fixed inset-0 bg-[#1a1f3c]/40 backdrop-blur-sm z-[100] flex items-center justify-center p-4">
+          <div className="bg-white rounded-[32px] p-8 max-w-sm w-full shadow-2xl animate-in zoom-in-95 duration-200">
+            <div className={`w-14 h-14 rounded-2xl flex items-center justify-center mb-6 ${upgradeModal === 'premium' ? 'bg-amber-50 text-[#F5A623]' : 'bg-blue-50 text-blue-600'}`}>
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M5 13l4 4L19 7" />
+              </svg>
+            </div>
+            <h3 className="text-xl font-black text-[#1a1f3c] mb-2">Switch to {upgradeModal.charAt(0).toUpperCase() + upgradeModal.slice(1)}?</h3>
+            <p className="text-sm text-gray-400 leading-relaxed mb-8">
+              Confirm your change to the {upgradeModal} plan. Your new listing limits and features will be available immediately.
+            </p>
+            
+            <div className="flex gap-3">
+              <button
+                onClick={() => setUpgradeModal(null)}
+                className="flex-1 px-6 py-3 rounded-xl text-sm font-bold text-gray-500 hover:bg-gray-50 transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={() => setUpgradeModal(null)}
+                className={`flex-1 px-6 py-3 rounded-xl text-sm font-bold text-white transition-all shadow-lg ${upgradeModal === 'premium' ? 'bg-[#F5A623] hover:bg-[#e09510] shadow-amber-500/20' : 'bg-[#1a1f3c] hover:bg-[#2a3060] shadow-blue-500/10'}`}
+              >
+                Confirm Plan
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* ── Current plan card ── */}
       <div className="bg-white rounded-2xl border border-gray-100 p-6">
-        <h2 className="text-sm font-bold text-gray-400 uppercase tracking-wide mb-4">Current plan</h2>
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-sm font-bold text-gray-400 uppercase tracking-wide">Current plan</h2>
+          <div className="flex items-center gap-2 bg-amber-50 px-4 py-2 rounded-xl border border-amber-100">
+            <span className="text-lg">⚡</span>
+            <div>
+              <p className="text-[10px] font-black text-amber-700 uppercase tracking-widest leading-none mb-0.5">Token Balance</p>
+              <p className="text-sm font-black text-amber-900 leading-none">{tokenBalance.toLocaleString()}</p>
+            </div>
+            <button 
+              onClick={() => setTokenModal(true)}
+              className="ml-2 w-6 h-6 bg-amber-200 text-amber-700 rounded-lg flex items-center justify-center hover:bg-amber-300 transition-colors"
+            >
+              +
+            </button>
+          </div>
+        </div>
         <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-6">
           <div className="flex-1">
             {/* Plan name + badge */}
@@ -129,10 +282,16 @@ export default function SubscriptionPage() {
               <p className="text-xs text-gray-400">Per month</p>
             </div>
             <div className="flex items-center gap-3">
-              <button className="text-sm font-bold border border-gray-200 text-[#1a1f3c] px-5 py-2.5 rounded-xl hover:border-[#1a1f3c] transition-colors">
-                Manage billing
+              <button 
+                onClick={() => setExtendModal(true)}
+                className="text-sm font-bold border border-gray-200 text-[#1a1f3c] px-5 py-2.5 rounded-xl hover:border-[#1a1f3c] transition-colors"
+              >
+                Extend plan
               </button>
-              <button className="text-sm font-bold bg-[#F5A623] hover:bg-[#e09510] text-white px-5 py-2.5 rounded-xl transition-colors shadow-md">
+              <button 
+                onClick={() => setUpgradeModal('premium')}
+                className="text-sm font-bold bg-[#F5A623] hover:bg-[#e09510] text-white px-5 py-2.5 rounded-xl transition-colors shadow-md"
+              >
                 Upgrade to premium
               </button>
             </div>
@@ -196,6 +355,7 @@ export default function SubscriptionPage() {
               <button
                 type="button"
                 disabled={plan.current}
+                onClick={() => setUpgradeModal(plan.id)}
                 className={`w-full py-3 rounded-xl text-sm font-bold transition-all duration-200 ${plan.ctaStyle}`}
               >
                 {plan.cta}

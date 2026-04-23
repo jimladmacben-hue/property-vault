@@ -132,21 +132,48 @@ export default function AgentOverviewPage() {
         </div>
       </div>
 
-      {/* ── Alert banner ── */}
-      <div className="flex items-center justify-between gap-4 bg-amber-50 border border-amber-200 rounded-2xl px-5 py-4 mb-6">
-        <div className="flex items-start gap-3">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" className="flex-shrink-0 mt-0.5">
-            <path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" stroke="#F5A623" strokeWidth="1.5" strokeLinejoin="round" />
-            <path d="M12 9v4M12 17h.01" stroke="#F5A623" strokeWidth="1.5" strokeLinecap="round" />
-          </svg>
-          <p className="text-sm text-amber-800 leading-relaxed">
-            You have <strong>5 new enquiries</strong> waiting for a response. Agents who reply within 2 hours get 3× more conversions.
-          </p>
+      {/* ── Alert banners ── */}
+      <div className="space-y-4 mb-6">
+        {/* Enquiry Alert */}
+        <div className="flex items-center justify-between gap-4 bg-amber-50 border border-amber-200 rounded-2xl px-5 py-4">
+          <div className="flex items-start gap-3">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" className="flex-shrink-0 mt-0.5">
+              <path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" stroke="#F5A623" strokeWidth="1.5" strokeLinejoin="round" />
+              <path d="M12 9v4M12 17h.01" stroke="#F5A623" strokeWidth="1.5" strokeLinecap="round" />
+            </svg>
+            <p className="text-sm text-amber-800 leading-relaxed">
+              You have <strong>5 new enquiries</strong> waiting for a response. Agents who reply within 2 hours get 3× more conversions.
+            </p>
+          </div>
+          <button className="flex-shrink-0 text-sm font-bold text-[#1a1f3c] border border-gray-300 px-4 py-2 rounded-xl hover:border-[#1a1f3c] transition-colors whitespace-nowrap">
+            Reply now →
+          </button>
         </div>
-        <button className="flex-shrink-0 text-sm font-bold text-[#1a1f3c] border border-gray-300 px-4 py-2 rounded-xl hover:border-[#1a1f3c] transition-colors whitespace-nowrap">
-          Reply now →
-        </button>
+
+        {/* Verification Alert */}
+        <div className="flex items-center justify-between gap-4 bg-blue-50 border border-blue-200 rounded-2xl px-5 py-4">
+          <div className="flex items-start gap-3">
+            <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center flex-shrink-0">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#2563eb" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+              </svg>
+            </div>
+            <div>
+              <p className="text-sm font-bold text-blue-900">Get your verification badge</p>
+              <p className="text-xs text-blue-700 leading-relaxed mt-0.5">
+                Complete your KYC to get the <span className="font-bold underline italic">Verified Agent</span> badge and increase buyer trust by up to 80%.
+              </p>
+            </div>
+          </div>
+          <Link 
+            href="/agent-dashboard/settings?tab=Verification" 
+            className="flex-shrink-0 text-sm font-bold bg-blue-600 text-white px-4 py-2 rounded-xl hover:bg-blue-700 transition-colors shadow-lg shadow-blue-600/20"
+          >
+            Complete KYC →
+          </Link>
+        </div>
       </div>
+
 
       {/* ── 4 stat cards ── */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">

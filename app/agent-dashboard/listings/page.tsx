@@ -68,6 +68,8 @@ export default function MyListingsPage() {
   const [selected, setSelected] = useState<number[]>([]);
   const [actionOpen, setActionOpen] = useState<number | null>(null);
   const [confirmModal, setConfirmModal] = useState<{ type: "Delete" | "Pause", id: number } | null>(null);
+  const [promoteModal, setPromoteModal] = useState<number | null>(null);
+  const [tokenAmount, setTokenAmount] = useState(100);
 
   const toggleSelect = (id: number) =>
     setSelected((prev) => prev.includes(id) ? prev.filter((i) => i !== id) : [...prev, id]);
@@ -113,6 +115,50 @@ export default function MyListingsPage() {
                 className={`flex-1 px-6 py-3 rounded-xl text-sm font-bold text-white transition-all ${confirmModal.type === "Delete" ? "bg-red-500 hover:bg-red-600 shadow-red-500/20" : "bg-[#1a1f3c] hover:bg-[#2a3060]"} shadow-lg`}
               >
                 Confirm
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+      {/* ── Promote Modal ── */}
+      {promoteModal && (
+        <div className="fixed inset-0 bg-[#1a1f3c]/40 backdrop-blur-sm z-[100] flex items-center justify-center p-4">
+          <div className="bg-white rounded-[32px] p-8 max-w-sm w-full shadow-2xl animate-in zoom-in-95 duration-200">
+            <div className="w-14 h-14 rounded-2xl bg-amber-50 text-[#F5A623] flex items-center justify-center mb-6">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" />
+              </svg>
+            </div>
+            <h3 className="text-xl font-black text-[#1a1f3c] mb-2">Promote Listing</h3>
+            <p className="text-sm text-gray-400 leading-relaxed mb-6">
+              Use your tokens to boost this listing to the top of search results. The more tokens you use, the higher your priority.
+            </p>
+            
+            <div className="mb-8">
+              <label className="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-3">Tokens to spend</label>
+              <div className="flex items-center gap-4">
+                <input 
+                  type="number" 
+                  value={tokenAmount}
+                  onChange={(e) => setTokenAmount(Number(e.target.value))}
+                  className="flex-1 bg-gray-50 border border-gray-100 rounded-xl px-4 py-3 text-lg font-black text-[#1a1f3c] focus:outline-none focus:border-[#F5A623]"
+                />
+                <span className="text-sm font-bold text-gray-400">Tokens</span>
+              </div>
+            </div>
+
+            <div className="flex gap-3">
+              <button
+                onClick={() => setPromoteModal(null)}
+                className="flex-1 px-6 py-3 rounded-xl text-sm font-bold text-gray-500 hover:bg-gray-50 transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={() => setPromoteModal(null)}
+                className="flex-1 px-6 py-3 rounded-xl text-sm font-bold text-white bg-[#F5A623] hover:bg-[#e09510] shadow-lg shadow-amber-500/20 transition-all"
+              >
+                Boost Now
               </button>
             </div>
           </div>
@@ -282,6 +328,13 @@ export default function MyListingsPage() {
                   >
                     View listing
                   </Link>
+                  <button
+                    type="button"
+                    onClick={() => { setPromoteModal(listing.id); setActionOpen(null); }}
+                    className="w-full px-4 py-2.5 text-left text-xs font-semibold hover:bg-amber-50 transition-colors text-[#F5A623]"
+                  >
+                    Promote Listing ⚡
+                  </button>
                   <button
                     type="button"
                     onClick={() => { setConfirmModal({ type: "Pause", id: listing.id }); setActionOpen(null); }}
